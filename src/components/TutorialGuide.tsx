@@ -1,0 +1,17 @@
+import {useEffect,useState} from 'react';
+import type {GameState} from '../game/types';
+import {tutorialStep} from '../game/tutorial';
+import {tutorialSteps} from '../game/tutorialSteps';
+import {useDialog} from './useDialog';
+export function StopDialog({onClose,onStop}:{onClose:()=>void;onStop:()=>void}){
+ const ref=useDialog(onClose);
+ return <div className="modal-backdrop"><section ref={ref} className="panel exit-dialog" role="dialog" aria-modal="true" aria-labelledby="tutorial-stop-title"><h2 id="tutorial-stop-title">튜토리얼 안내를 종료하고 지금부터 자유 플레이를 시작할까요?</h2><p>현재 국가·날짜·정책·사건은 유지됩니다. 이후의 지정 사건과 안내 제한만 해제합니다.</p><div><button className="secondary" onClick={onClose}>계속 배우기</button><button className="primary" onClick={onStop}>자유 플레이 시작</button></div></section></div>;
+}
+export default function TutorialGuide({game,active,onNavigate,onRead,onStop,onFastForward,busy}:{game:GameState;active:string;onNavigate:(menu:string)=>void;onRead:()=>void;onStop:()=>void;onFastForward:()=>void;busy:boolean}){
+ const step=tutorialStep(game),[collapsed,setCollapsed]=useState(false),[stop,setStop]=useState(false),[done,setDone]=useState(false),[targetVisible,setTargetVisible]=useState(false);
+ useEffect(()=>{setCollapsed(false);if(!step)return;const selector=step.target;let el:Element|null=null;const mark=()=>{el?.classList.remove('tutorial-highlight');el=document.querySelector(selector);const visible=!!el&&!!el.getClientRects().length;setTargetVisible(visible);if(visible)el!.classList.add('tutorial-highlight');};mark();const observer=new MutationObserver(mark);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});return()=>{observer.disconnect();el?.classList.remove('tutorial-highlight');};},[step?.id,active]);
+ if(game.tutorial?.mode==='completed'&&!done)return <section className="tutorial-complete panel" role="status"><strong>튜토리얼 완료 · 재선에 성공했습니다.</strong><p>이제부터 모든 결정을 자유롭게 내릴 수 있습니다. 같은 세계에서 계속 운영하세요.</p><button className="secondary" onClick={()=>setDone(true)}>자유 플레이 계속</button></section>;
+ if(!step)return null;
+ const index=tutorialSteps.findIndex(s=>s.id===step.id);
+ return <><aside className={`tutorial-guide panel ${collapsed?'collapsed':''}`} aria-label="튜토리얼 안내" data-step={step.id}><div className="tutorial-guide-heading"><strong>{index+1} / {tutorialSteps.length} · {step.title}</strong><button className="secondary" onClick={()=>setCollapsed(!collapsed)}>{collapsed?'안내 다시 열기':'안내 접기'}</button></div>{!collapsed&&<><p>{step.text}</p><div className="tutorial-guide-actions">{targetVisible&&<button className="secondary" onClick={()=>document.querySelector(step.target)?.scrollIntoView({block:'center',behavior:'instant'})}>강조 영역 보기</button>}{active!==step.menu&&<button className="secondary" onClick={()=>onNavigate(step.menu)}>안내 화면으로 이동</button>}{step.kind==='read'&&<button className="primary" disabled={active!==step.menu||!targetVisible} onClick={onRead}>확인했어요</button>}{step.kind==='wait'&&<button className="primary" disabled={!!game.events.pendingEvent} onClick={onFastForward}>{busy?'진행 중 · 클릭하여 중단':'다음 안내까지 진행'}</button>}<button className="secondary" onClick={()=>setStop(true)}>튜토리얼 종료</button></div><progress aria-label="튜토리얼 진행" value={game.tutorial!.completedStepIds.length} max={tutorialSteps.length}/></>}</aside>{stop&&<StopDialog onClose={()=>setStop(false)} onStop={()=>{setStop(false);onStop();}}/>}</>;
+}

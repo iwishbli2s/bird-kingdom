@@ -1,0 +1,6 @@
+import type { TechnologyDomain } from './technologyTypes';
+export const technologyDomains:TechnologyDomain[]=['agriculture','industry','infrastructure','medicine','information','military'];
+export const technologyLabels:Record<TechnologyDomain,string>={agriculture:'농업기술',industry:'산업기술',infrastructure:'기반시설',medicine:'의료기술',information:'정보기술',military:'군사기술'};
+export const technologyConfig={slots:3,maxLevel:10,maxGrowth:.006,maxProductivity:.25,maxSocial:4,maxMortalityReduction:.15,maxReadiness:6,maxLogistics:6,maxCapability:4,maxResearch:.15,maxDamageReduction:.3,diffusion:.05};
+export const initialTechnologyLevels:Record<string,number[]>={sparrow:[4,5,5,4,5,4],'pigeon-state':[3,4,6,5,6,4],'eagle-state':[3,6,5,4,4,7],'owl-state':[3,5,5,6,7,4],'duck-state':[7,4,5,5,3,3]};
+export const researchPriorities:Record<string,TechnologyDomain[]>={eagle:['military','industry','infrastructure','information','medicine','agriculture'],owl:['information','medicine','industry','infrastructure','agriculture','military'],duck:['agriculture','infrastructure','medicine','industry','information','military'],pigeon:['information','infrastructure','medicine','industry','agriculture','military'],sparrow:['industry','information','infrastructure','medicine','agriculture','military']};

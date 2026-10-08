@@ -1,0 +1,1496 @@
+[
+  {
+    "source": ".test-output/10b1-baseline",
+    "scenario": "war",
+    "firstPause": 2,
+    "resolved": 30,
+    "activeMonths": 2,
+    "rows": [
+      {
+        "month": 1,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 1.418539378456839,
+            "warSupport": 57.12777111064908,
+            "capability": 52.47708231245763,
+            "strategy": "hold",
+            "peaceUtility": 13.190283896814702
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.2195358606159978,
+            "warSupport": 80.59625450016291,
+            "capability": 57.876410140814336,
+            "strategy": "hold",
+            "peaceUtility": -47.643029713501555
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 2.037575673861169,
+            "warSupport": 56.389492346186266,
+            "capability": 52.221121062326766,
+            "strategy": "hold",
+            "peaceUtility": 12.707283975038386
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.638779243119883,
+            "warSupport": 80.39485847205843,
+            "capability": 58.0414007240754,
+            "strategy": "hold",
+            "peaceUtility": -45.12805092086585
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 56.826609145186865,
+            "capability": 53.35596103951938,
+            "strategy": "survival",
+            "peaceUtility": 89.43119925885662
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.99387407399178,
+            "capability": 59.21869358463603,
+            "strategy": "hold",
+            "peaceUtility": -43.88961495275978
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 56.2654151120607,
+            "capability": 54.13993253008964,
+            "strategy": "survival",
+            "peaceUtility": 91.14476145792561
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98311808884313,
+            "capability": 60.1594408797943,
+            "strategy": "hold",
+            "peaceUtility": -39.12174930502094
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.972961412017526,
+            "capability": 54.48118362510005,
+            "strategy": "survival",
+            "peaceUtility": 95.29441645413286
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.05938485362688,
+            "capability": 60.43028598612853,
+            "strategy": "hold",
+            "peaceUtility": -34.35138734480647
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.80720932487248,
+            "capability": 54.678727080829105,
+            "strategy": "survival",
+            "peaceUtility": 100.0722879673107
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.17966298316992,
+            "capability": 60.62627568512279,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 20.420002863341892
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.75356946066677,
+            "capability": 54.85814060223641,
+            "strategy": "survival",
+            "peaceUtility": 105.444555296863
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.31196249231999,
+            "capability": 60.713206057537725,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 35.837002048800265
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.75356946066677,
+            "capability": 54.738101642511126,
+            "strategy": "survival",
+            "peaceUtility": 105.39998183544456
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.31196249231999,
+            "capability": 61.16528632525682,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 32.256308957515756
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.75356946066677,
+            "capability": 54.66788177675561,
+            "strategy": "survival",
+            "peaceUtility": 105.46322226245829
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.31196249231999,
+            "capability": 61.51505400485465,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 30.42778586697206
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.75356946066677,
+            "capability": 51.98283073385574,
+            "strategy": "survival",
+            "peaceUtility": 109.92676890145896
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.31196249231999,
+            "capability": 61.96598705235089,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 38.62772972646474
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": ".test-output/10b1-baseline",
+    "scenario": "asymmetric",
+    "firstPause": 2,
+    "resolved": 30,
+    "activeMonths": 2,
+    "rows": [
+      {
+        "month": 1,
+        "status": "active",
+        "control": 2.578100529702901,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 1.4066457367580538,
+            "warSupport": 57.331414563007456,
+            "capability": 79.58451181451056,
+            "strategy": "press_advantage",
+            "peaceUtility": 19.097510819381625
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.2426487207569057,
+            "warSupport": 80.38029905652749,
+            "capability": 39.53801194163208,
+            "strategy": "hold",
+            "peaceUtility": -47.626850711402916
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "peace_negotiation",
+        "control": 5.059311737069436,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 2.0158414133053277,
+            "warSupport": 56.772516029612966,
+            "capability": 76.79804078884435,
+            "strategy": "press_advantage",
+            "peaceUtility": 18.07365644554105
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.6848630218738474,
+            "warSupport": 79.97075834601621,
+            "capability": 40.026775879142406,
+            "strategy": "hold",
+            "peaceUtility": -45.09579227573808
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "peace_negotiation",
+        "control": 5.059311737069436,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 57.171776934520906,
+            "capability": 75.61643986197845,
+            "strategy": "survival",
+            "peaceUtility": 94.93825840725515
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.58912913502623,
+            "capability": 41.54190468121579,
+            "strategy": "hold",
+            "peaceUtility": -43.88961495275978
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "peace_negotiation",
+        "control": 5.059311737069436,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 56.56010266286132,
+            "capability": 71.93015436356252,
+            "strategy": "survival",
+            "peaceUtility": 95.51874869192653
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.57837314987758,
+            "capability": 43.939840587127314,
+            "strategy": "hold",
+            "peaceUtility": -39.12174930502094
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "peace_negotiation",
+        "control": 5.059311737069436,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 56.22097637030014,
+            "capability": 68.81289538434028,
+            "strategy": "survival",
+            "peaceUtility": 99.18416689350717
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.65463991466133,
+            "capability": 46.2741646463084,
+            "strategy": "hold",
+            "peaceUtility": -34.35138734480647
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "peace_negotiation",
+        "control": 5.059311737069436,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 56.00483014128388,
+            "capability": 66.62561099203432,
+            "strategy": "survival",
+            "peaceUtility": 102.75899503573855
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.77491804420437,
+            "capability": 48.76589292979292,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 20.420002863341892
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 5.059311737069436,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.893381143953626,
+            "capability": 64.35055939302545,
+            "strategy": "survival",
+            "peaceUtility": 107.02700870513561
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.90721755335444,
+            "capability": 53.81593548660768,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 35.837002048800265
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 5.059311737069436,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.893381143953626,
+            "capability": 63.50084101196978,
+            "strategy": "survival",
+            "peaceUtility": 108.15171536896878
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.90721755335444,
+            "capability": 58.470440948515495,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 32.256441248299204
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 5.059311737069436,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.893381143953626,
+            "capability": 63.16969198727733,
+            "strategy": "survival",
+            "peaceUtility": 106.43585751877809
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.90721755335444,
+            "capability": 60.31972414208738,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 34.24542907334314
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 5.059311737069436,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 0,
+            "warSupport": 55.893381143953626,
+            "capability": 65.36090342665534,
+            "strategy": "survival",
+            "peaceUtility": 105.87814668010368
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.90721755335444,
+            "capability": 61.964489846837935,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 29.77683892735732
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": ".test-output/10b1-baseline",
+    "scenario": "collapse",
+    "firstPause": 1,
+    "resolved": 30,
+    "activeMonths": 1,
+    "rows": [
+      {
+        "month": 1,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 96.41853937845684,
+            "warSupport": 17.22777111064908,
+            "capability": 52.47708231245763,
+            "strategy": "survival",
+            "peaceUtility": 180.60841792433314
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.2195358606159978,
+            "warSupport": 80.59625450016291,
+            "capability": 57.876410140814336,
+            "strategy": "hold",
+            "peaceUtility": -47.64290513108994
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 94.81853937845685,
+            "warSupport": 17.64718307925947,
+            "capability": 27.502603928264662,
+            "strategy": "survival",
+            "peaceUtility": 180.79768467786323
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.91641557035842,
+            "capability": 58.37473421981359,
+            "strategy": "press_advantage",
+            "peaceUtility": -46.27355302065258
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 92.41853937845686,
+            "warSupport": 18.273239334751047,
+            "capability": 28.032519989207824,
+            "strategy": "survival",
+            "peaceUtility": 180.42917603039768
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.80222884497141,
+            "capability": 59.023004013309446,
+            "strategy": "press_advantage",
+            "peaceUtility": -43.887985040362054
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 87.61853937845687,
+            "warSupport": 19.74646036487099,
+            "capability": 29.11842669437655,
+            "strategy": "survival",
+            "peaceUtility": 180.67452213004583
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.78684120221075,
+            "capability": 59.88014194092152,
+            "strategy": "press_advantage",
+            "peaceUtility": -39.120161655895686
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 82.81853937845689,
+            "warSupport": 21.4569510012141,
+            "capability": 30.267337260738202,
+            "strategy": "survival",
+            "peaceUtility": 180.77837297471928
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.88262835216585,
+            "capability": 60.54042884433424,
+            "strategy": "press_advantage",
+            "peaceUtility": -34.29745420559473
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "peace_negotiation",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 78.01853937845691,
+            "warSupport": 23.29823638873698,
+            "capability": 31.468284731883667,
+            "strategy": "survival",
+            "peaceUtility": 180.72325294471034
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.03275783542887,
+            "capability": 60.77723158810865,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 20.47377950187285
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 73.21853937845692,
+            "warSupport": 25.24328315013822,
+            "capability": 34.0564044781958,
+            "strategy": "survival",
+            "peaceUtility": 180.02459823847565
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.19599813286652,
+            "capability": 60.89468797369979,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 45.27278461263795
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 73.21853937845692,
+            "warSupport": 25.24328315013822,
+            "capability": 36.707843722853845,
+            "strategy": "survival",
+            "peaceUtility": 180.11888494787397
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.19599813286652,
+            "capability": 61.22666741397777,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 40.00534792771947
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 73.21853937845692,
+            "warSupport": 25.24328315013822,
+            "capability": 39.285645826205894,
+            "strategy": "survival",
+            "peaceUtility": 180.3521086292319
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.19599813286652,
+            "capability": 61.77022141819655,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 25.265974053686158
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 0,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 73.21853937845692,
+            "warSupport": 25.24328315013822,
+            "capability": 52.459391845581905,
+            "strategy": "survival",
+            "peaceUtility": 182.43567004433802
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 81.19599813286652,
+            "capability": 62.11317270089283,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 25.20249017845974
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": "src",
+    "scenario": "war",
+    "firstPause": 21,
+    "resolved": 24,
+    "activeMonths": 21,
+    "rows": [
+      {
+        "month": 1,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 1.418539378456839,
+            "warSupport": 57.12777111064908,
+            "capability": 52.47708231245763,
+            "strategy": "hold",
+            "peaceUtility": -16.8295764878427
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.2195358606159978,
+            "warSupport": 80.59625450016291,
+            "capability": 57.876410140814336,
+            "strategy": "hold",
+            "peaceUtility": -62.89118773407127
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 5.254414405130284,
+            "warSupport": 55.457915986364796,
+            "capability": 53.066826041163665,
+            "strategy": "hold",
+            "peaceUtility": -10.64569996809966
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 4.657771892069049,
+            "warSupport": 79.54592669031166,
+            "capability": 58.78551060622879,
+            "strategy": "hold",
+            "peaceUtility": -55.8497555053623
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 10.603133329279416,
+            "warSupport": 52.32649826691999,
+            "capability": 53.52772620539534,
+            "strategy": "hold",
+            "peaceUtility": -1.4596036244485546
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 9.415774557693469,
+            "warSupport": 76.95356577333294,
+            "capability": 59.655494487989195,
+            "strategy": "hold",
+            "peaceUtility": -45.246819831156095
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 23.742647325146404,
+            "warSupport": 47.662878329240186,
+            "capability": 54.105296183133305,
+            "strategy": "hold",
+            "peaceUtility": 17.564319022038617
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 21.375670460909596,
+            "warSupport": 72.11634552719045,
+            "capability": 60.83175659259778,
+            "strategy": "hold",
+            "peaceUtility": -22.490434332247723
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "active",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 38.2795023837288,
+            "warSupport": 40.472434608705214,
+            "capability": 50.72576188562802,
+            "strategy": "hold",
+            "peaceUtility": 47.68935230966325
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 34.729224543483554,
+            "warSupport": 66.33363344370903,
+            "capability": 57.630686642696936,
+            "strategy": "hold",
+            "peaceUtility": -2.0170283732464256
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 42.64891571732293,
+            "warSupport": 38.124699255012175,
+            "capability": 46.97044368165159,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 65.44155412925195
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 38.50809841861436,
+            "warSupport": 65.53265938641348,
+            "capability": 53.80065918537996,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 55.51520154065031
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 42.64891571732293,
+            "warSupport": 38.124699255012175,
+            "capability": 44.80992095988654,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 65.55444897990417
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 38.50809841861436,
+            "warSupport": 65.53265938641348,
+            "capability": 51.07890449848538,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 62.48848938105512
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 42.64891571732293,
+            "warSupport": 38.124699255012175,
+            "capability": 46.89097515770916,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 77.2696634970812
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 38.50809841861436,
+            "warSupport": 65.53265938641348,
+            "capability": 54.071841359493575,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 60.47776894909552
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 42.64891571732293,
+            "warSupport": 38.124699255012175,
+            "capability": 49.42171259367074,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 66.50123950264123
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 38.50809841861436,
+            "warSupport": 65.53265938641348,
+            "capability": 57.18849918478648,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 57.018919441755116
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 42.64891571732293,
+            "warSupport": 38.124699255012175,
+            "capability": 52.06832384634626,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 66.3566273762332
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 38.50809841861436,
+            "warSupport": 65.53265938641348,
+            "capability": 61.37565479439096,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 56.798314073057625
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": "src",
+    "scenario": "asymmetric",
+    "firstPause": 21,
+    "resolved": 24,
+    "activeMonths": 21,
+    "rows": [
+      {
+        "month": 1,
+        "status": "active",
+        "control": 2.578100529702901,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 1.4066457367580538,
+            "warSupport": 57.331414563007456,
+            "capability": 79.58451181451056,
+            "strategy": "press_advantage",
+            "peaceUtility": -13.062656689296162
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 1.2426487207569057,
+            "warSupport": 80.38029905652749,
+            "capability": 39.53801194163208,
+            "strategy": "hold",
+            "peaceUtility": -62.83415171261886
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "active",
+        "control": 6.3510174442612914,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 5.223978230390374,
+            "warSupport": 55.948990331898024,
+            "capability": 78.01966901015065,
+            "strategy": "press_advantage",
+            "peaceUtility": -6.691196342515141
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 4.726675039890191,
+            "warSupport": 79.00890597268588,
+            "capability": 40.529850855496804,
+            "strategy": "hold",
+            "peaceUtility": -55.71060765721593
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "active",
+        "control": 11.475595961845583,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 10.55362470392276,
+            "warSupport": 53.209679847434145,
+            "capability": 75.39167311868503,
+            "strategy": "press_advantage",
+            "peaceUtility": 3.5836006201752753
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 9.552058477522259,
+            "warSupport": 75.9782788500572,
+            "capability": 41.749403497003236,
+            "strategy": "hold",
+            "peaceUtility": -45.011656363811895
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "active",
+        "control": 22.01021144605054,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 23.687688759570598,
+            "warSupport": 48.335304925055425,
+            "capability": 69.7805297411359,
+            "strategy": "hold",
+            "peaceUtility": 24.241641863456817
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 21.6397729245216,
+            "warSupport": 70.24460557678937,
+            "capability": 44.17379527953992,
+            "strategy": "hold",
+            "peaceUtility": -22.1133659411367
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "active",
+        "control": 28.73049629169255,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 38.26541305383294,
+            "warSupport": 41.488689029997204,
+            "capability": 61.56101829127155,
+            "strategy": "hold",
+            "peaceUtility": 48.29064719115992
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 35.10812653751324,
+            "warSupport": 63.87605490288115,
+            "capability": 43.76428217544386,
+            "strategy": "hold",
+            "peaceUtility": 43.62902154662129
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "resolved",
+        "control": 31.139723541721537,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 43.259685172579246,
+            "warSupport": 39.06601554351993,
+            "capability": 55.375307696708546,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 59.95036495419455
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 39.93812950111666,
+            "warSupport": 62.43536275612754,
+            "capability": 42.76246468806268,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 47.07960425841857
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 31.139723541721537,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 43.259685172579246,
+            "warSupport": 39.06601554351993,
+            "capability": 51.797161584789734,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 59.318655726542666
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 39.93812950111666,
+            "warSupport": 62.43536275612754,
+            "capability": 45.57890759248038,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 47.505693382681805
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 31.139723541721537,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 43.259685172579246,
+            "warSupport": 39.06601554351993,
+            "capability": 54.016601079484786,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 64.33981356422632
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 39.93812950111666,
+            "warSupport": 62.43536275612754,
+            "capability": 51.583471357724086,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 50.309411839000816
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 31.139723541721537,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 43.259685172579246,
+            "warSupport": 39.06601554351993,
+            "capability": 57.092566343208304,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 58.749264142989425
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 39.93812950111666,
+            "warSupport": 62.43536275612754,
+            "capability": 55.9669292101038,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 49.110123797130136
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 31.139723541721537,
+        "result": "status_quo",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 43.259685172579246,
+            "warSupport": 39.06601554351993,
+            "capability": 65.07240906483646,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 56.42235721076329
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 39.93812950111666,
+            "warSupport": 62.43536275612754,
+            "capability": 61.042186272295346,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": 54.2010172373951
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": "src",
+    "scenario": "collapse",
+    "firstPause": 1,
+    "resolved": 4,
+    "activeMonths": 1,
+    "rows": [
+      {
+        "month": 1,
+        "status": "ceasefire",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 97.41853937845684,
+            "warSupport": 17.22777111064908,
+            "capability": 52.47708231245763,
+            "strategy": "survival",
+            "peaceUtility": 151.28855753967574
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 2.2195358606159976,
+            "warSupport": 80.59625450016291,
+            "capability": 57.876410140814336,
+            "strategy": "hold",
+            "peaceUtility": -62.19106315165966
+          }
+        ]
+      },
+      {
+        "month": 3,
+        "status": "ceasefire",
+        "control": 0,
+        "result": null,
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.81853937845685,
+            "warSupport": 17.226547010280036,
+            "capability": 27.327983505036656,
+            "strategy": "survival",
+            "peaceUtility": 167.96723351225668
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0.6195358606159975,
+            "warSupport": 80.76521321461298,
+            "capability": 58.38614334051953,
+            "strategy": "press_advantage",
+            "peaceUtility": -59.51313573316971
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 27.885234737610944,
+            "strategy": "survival",
+            "peaceUtility": 168.0637809257252
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 58.923518062229995,
+            "strategy": "seek_ceasefire",
+            "peaceUtility": -44.458267739964654
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 28.975551407508046,
+            "strategy": "survival",
+            "peaceUtility": 167.79205073566877
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 60.06239025495172,
+            "strategy": "press_advantage",
+            "peaceUtility": -48.57875170199324
+          }
+        ]
+      },
+      {
+        "month": 18,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 30.031043240728405,
+            "strategy": "survival",
+            "peaceUtility": 167.35126839568468
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 60.37481140549024,
+            "strategy": "press_advantage",
+            "peaceUtility": -49.05430827443153
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 31.15226856375426,
+            "strategy": "survival",
+            "peaceUtility": 166.83845330454548
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 60.543948880386054,
+            "strategy": "press_advantage",
+            "peaceUtility": -48.28856244244581
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 33.53359838766067,
+            "strategy": "survival",
+            "peaceUtility": 171.11109173190385
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 60.89297656736554,
+            "strategy": "press_advantage",
+            "peaceUtility": -53.06415525451325
+          }
+        ]
+      },
+      {
+        "month": 48,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 36.092490222755366,
+            "strategy": "survival",
+            "peaceUtility": 168.7796814645632
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 61.091915980221785,
+            "strategy": "press_advantage",
+            "peaceUtility": -53.37304462196712
+          }
+        ]
+      },
+      {
+        "month": 60,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 38.683472824861326,
+            "strategy": "survival",
+            "peaceUtility": 164.64405970801545
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 61.278883287608494,
+            "strategy": "press_advantage",
+            "peaceUtility": -46.760346328115496
+          }
+        ]
+      },
+      {
+        "month": 120,
+        "status": "resolved",
+        "control": 0,
+        "result": "defense_success",
+        "participants": [
+          {
+            "id": "sparrow",
+            "fatigue": 95.01853937845685,
+            "warSupport": 17.42663020636857,
+            "capability": 50.733979633024866,
+            "strategy": "survival",
+            "peaceUtility": 160.48788950949205
+          },
+          {
+            "id": "pigeon",
+            "fatigue": 0,
+            "warSupport": 80.98096143077177,
+            "capability": 62.181424487357134,
+            "strategy": "hold",
+            "peaceUtility": -51.87860221875842
+          }
+        ]
+      }
+    ]
+  }
+]

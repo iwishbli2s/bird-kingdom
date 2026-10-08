@@ -1,0 +1,14 @@
+import {runSimulation,distribution} from './harness';
+import {mkdirSync,writeFileSync,existsSync,readFileSync} from 'node:fs';
+import {spawn} from 'node:child_process';
+const args=process.argv.slice(2);
+if(args[0]==='worker'){const [_,seed,months,source,scenario,difficulty,strategy,file]=args;const result=await runSimulation(+seed,+months,source,scenario,difficulty,strategy);writeFileSync(file,JSON.stringify(result));}
+else {
+ const tag=args[0]??'candidate',source=args[1]??'src',dir='simulation/results/'+tag;mkdirSync(dir,{recursive:true});
+ const jobs:any[]=[];for(let i=0;i<50;i++)jobs.push({seed:1001+i*7919,months:600,scenario:'normal'});for(let i=0;i<10;i++)jobs.push({seed:1001+i*7919,months:2400,scenario:'normal'});jobs.push({seed:99101,months:6000,scenario:'normal'});
+ if(tag!=='baseline'&&!args.includes('--baseline')){for(const scenario of ['recession','debt','disease','storm','separatism','war','asymmetric','multiwar','prosperity'])for(const seed of [91,2030,8451])jobs.push({seed,months:240,scenario});for(const strategy of ['welfare','industry','research','military'])jobs.push({seed:2030,months:1200,scenario:'normal',strategy});for(const difficulty of ['easy','normal','hard'])for(const seed of [91,2030,8451])jobs.push({seed,months:240,scenario:'storm',difficulty});}
+ let index=0,completed=0;const results:any[]=[];
+ await Promise.all(Array.from({length:Number(process.env.BALANCE_WORKERS??4)},async()=>{while(index<jobs.length){const n=index++,j=jobs[n],file=dir+'/'+n+'.json';if(!args.includes('--resume')||!existsSync(file))await new Promise<void>((ok,bad)=>{const p=spawn(process.execPath,['--import','tsx','simulation/run.ts','worker',String(j.seed),String(j.months),source,j.scenario,j.difficulty??'normal',j.strategy??'ai',file],{stdio:'inherit',windowsHide:true});p.on('error',bad);p.on('exit',c=>c===0?ok():bad(new Error('Worker failed '+n)));});const {readFileSync}=await import('node:fs');results.push(JSON.parse(readFileSync(file,'utf8')));console.log(tag,++completed+'/'+jobs.length,'seed',j.seed,j.months,j.scenario);}}));
+ const aggregate=(set:any[])=>Object.fromEntries(['finalCountryCount','independences','internalConflicts','wars','crises','annualGrowth','peakDebt','technologyMean','level10Share','events','gdpRatio','popRatio','historyBytes'].map(k=>[k,distribution(set.map(r=>r[k]))]));const report={tag,source,generatedAt:new Date().toISOString(),short:aggregate(results.filter(r=>r.months===600)),long:aggregate(results.filter(r=>r.months===2400)),warDurations:distribution(results.flatMap(r=>r.warDurations)),results:results.sort((a,b)=>a.months-b.months||a.seed-b.seed)};writeFileSync(dir+'/aggregate.json',JSON.stringify(report,null,2));writeFileSync(dir+'/summary.md','# '+tag+'\n\n```json\n'+JSON.stringify({short:report.short,long:report.long,warDurations:report.warDurations},null,2)+'\n```\n');console.log('COMPLETE',tag);
+}
+

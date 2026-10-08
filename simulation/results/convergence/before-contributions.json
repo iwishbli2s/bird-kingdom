@@ -1,0 +1,331 @@
+{
+  "source": ".test-output/10b1-baseline",
+  "seed": 99101,
+  "method": "GDP weighted expected annual percentage-point contributions; AI memo overlaps budget/tax. Event is realized ongoing-effect annual log impulse; random cycles and immediate new events are excluded.",
+  "checkpoints": [
+    {
+      "month": 600,
+      "expectedAnnualContribution": {
+        "base": 2.4435050537932903,
+        "productivity": 0.19457085142877897,
+        "technology": 0.005185779205407656,
+        "research": 0.018152491573652067,
+        "infrastructure": 0.024423416434348845,
+        "industrySupport": 0.023107438537754797,
+        "trade": 0.12673714502366243,
+        "tax": -0.017049647377928082,
+        "otherBudget": 0.00882788728533635,
+        "crisis": -0.04651448996837656,
+        "maturity": 0,
+        "event": 0.07048977365471658
+      },
+      "aiPolicyMemo": 0.057461586453163974,
+      "gdp": 13538.33832586505,
+      "growth": [
+        {
+          "id": "pigeon",
+          "growth": 3.0570057568445783
+        },
+        {
+          "id": "sparrow",
+          "growth": 2.056415505559856
+        }
+      ],
+      "productivity": [
+        {
+          "id": "sparrow",
+          "sectors": {
+            "agriculture": 105.1129774882976,
+            "manufacturing": 109.08012881990325,
+            "services": 107.41102834871592,
+            "advanced": 117.27755919885209,
+            "defense": 105.12139831796009
+          }
+        },
+        {
+          "id": "duck-state",
+          "sectors": {
+            "agriculture": 105.14285095365696,
+            "manufacturing": 108.66856255870722,
+            "services": 107.63063409659306,
+            "advanced": 116.13411323122052,
+            "defense": 105.12139831796013
+          }
+        },
+        {
+          "id": "eagle-state",
+          "sectors": {
+            "agriculture": 105.1105267707808,
+            "manufacturing": 108.48407554932105,
+            "services": 107.81900340912621,
+            "advanced": 116.2906629956415,
+            "defense": 105.12328862133221
+          }
+        },
+        {
+          "id": "owl-state",
+          "sectors": {
+            "agriculture": 105.11217249929915,
+            "manufacturing": 109.29575460494321,
+            "services": 107.97065671754878,
+            "advanced": 118.10452202871078,
+            "defense": 105.27851258090442
+          }
+        },
+        {
+          "id": "pigeon-state",
+          "sectors": {
+            "agriculture": 105.15838967754831,
+            "manufacturing": 109.8901850858465,
+            "services": 107.76131257160135,
+            "advanced": 117.07139660054413,
+            "defense": 105.3145653808439
+          }
+        }
+      ]
+    },
+    {
+      "month": 2400,
+      "expectedAnnualContribution": {
+        "base": 2.456061619052885,
+        "productivity": 0.23441909312899403,
+        "technology": 0.02825286364341685,
+        "research": 0.04480871885833814,
+        "infrastructure": 0.023071108050103678,
+        "industrySupport": 0.01480448147518934,
+        "trade": 0.10844833550831905,
+        "tax": -0.02697468680905286,
+        "otherBudget": 0.008190506317387344,
+        "crisis": -0.03138057761930386,
+        "maturity": 0,
+        "event": 0.04173294174019429
+      },
+      "aiPolicyMemo": 0.06390012789196566,
+      "gdp": 940964.6905107924,
+      "growth": [
+        {
+          "id": "pigeon",
+          "growth": 3.117005141507728
+        },
+        {
+          "id": "sparrow",
+          "growth": 2.274707015125352
+        }
+      ],
+      "productivity": [
+        {
+          "id": "sparrow",
+          "sectors": {
+            "agriculture": 123.61448973648594,
+            "manufacturing": 143.8363413113242,
+            "services": 135.23645369915695,
+            "advanced": 196.17532832603246,
+            "defense": 122.15367908304088
+          }
+        },
+        {
+          "id": "duck-state",
+          "sectors": {
+            "agriculture": 123.21992043650677,
+            "manufacturing": 142.3334110227747,
+            "services": 134.80664566292535,
+            "advanced": 185.9945498781977,
+            "defense": 122.1548688723006
+          }
+        },
+        {
+          "id": "eagle-state",
+          "sectors": {
+            "agriculture": 122.78847611750614,
+            "manufacturing": 144.4683016090839,
+            "services": 135.9415625346033,
+            "advanced": 188.8664971820671,
+            "defense": 122.1645708145346
+          }
+        },
+        {
+          "id": "owl-state",
+          "sectors": {
+            "agriculture": 123.97112360750724,
+            "manufacturing": 148.19895126120963,
+            "services": 136.60017129367816,
+            "advanced": 201.63336004042816,
+            "defense": 122.87805097638322
+          }
+        },
+        {
+          "id": "pigeon-state",
+          "sectors": {
+            "agriculture": 123.68663826002346,
+            "manufacturing": 145.8012082521879,
+            "services": 137.50569438005073,
+            "advanced": 195.7672567182206,
+            "defense": 123.10252128295542
+          }
+        }
+      ]
+    },
+    {
+      "month": 4800,
+      "expectedAnnualContribution": {
+        "base": 2.583361408634017,
+        "productivity": 0.2683031426815969,
+        "technology": 0.034860268474868505,
+        "research": 0.08454893092515321,
+        "infrastructure": 0.02064438182172375,
+        "industrySupport": 0.006027628596653471,
+        "trade": 0.056542743958234935,
+        "tax": -0.029949532616150604,
+        "otherBudget": 0.008453330641396736,
+        "crisis": -0.01466642781505625,
+        "maturity": 0,
+        "event": 0.03665035131777337
+      },
+      "aiPolicyMemo": 0.08972473936877656,
+      "gdp": 418983986.56996924,
+      "growth": [
+        {
+          "id": "pigeon",
+          "growth": 2.5988448992514264
+        },
+        {
+          "id": "sparrow",
+          "growth": 2.2914530043798984
+        }
+      ],
+      "productivity": [
+        {
+          "id": "sparrow",
+          "sectors": {
+            "agriculture": 155.8919390135572,
+            "manufacturing": 219.60326225976664,
+            "services": 188.81131203887077,
+            "advanced": 394.3783082137743,
+            "defense": 149.21512002313693
+          }
+        },
+        {
+          "id": "duck-state",
+          "sectors": {
+            "agriculture": 152.9162043399261,
+            "manufacturing": 220.7201886714224,
+            "services": 188.6929839343791,
+            "advanced": 375.434293222129,
+            "defense": 149.22115725712655
+          }
+        },
+        {
+          "id": "eagle-state",
+          "sectors": {
+            "agriculture": 154.69586827666035,
+            "manufacturing": 218.0457704900735,
+            "services": 189.03190006082713,
+            "advanced": 378.020876266411,
+            "defense": 149.22361695574492
+          }
+        },
+        {
+          "id": "owl-state",
+          "sectors": {
+            "agriculture": 156.32072920047716,
+            "manufacturing": 223.4899932456357,
+            "services": 188.82704558052822,
+            "advanced": 413.9348472768046,
+            "defense": 151.0057478455172
+          }
+        },
+        {
+          "id": "pigeon-state",
+          "sectors": {
+            "agriculture": 156.2561697877987,
+            "manufacturing": 226.62601380053272,
+            "services": 189.4993575114448,
+            "advanced": 400.4522353082738,
+            "defense": 151.55511988033777
+          }
+        }
+      ]
+    },
+    {
+      "month": 6000,
+      "expectedAnnualContribution": {
+        "base": 2.6283314150463846,
+        "productivity": 0.28336701389538227,
+        "technology": 0.033686031129997705,
+        "research": 0.10441465846535242,
+        "infrastructure": 0.01979278385015163,
+        "industrySupport": 0.002822914494016585,
+        "trade": 0.02966740683482054,
+        "tax": -0.030365896876308227,
+        "otherBudget": 0.009033839512718023,
+        "crisis": -0.01358320189583228,
+        "maturity": 0,
+        "event": 0.015951028899775305
+      },
+      "aiPolicyMemo": 0.10569829944593041,
+      "gdp": 8036705732.381897,
+      "growth": [
+        {
+          "id": "pigeon",
+          "growth": 3.3102419419655407
+        },
+        {
+          "id": "sparrow",
+          "growth": 1.9254739771659701
+        }
+      ],
+      "productivity": [
+        {
+          "id": "sparrow",
+          "sectors": {
+            "agriculture": 175.06104354694673,
+            "manufacturing": 271.6887095155976,
+            "services": 222.8412018018714,
+            "advanced": 559.164409377075,
+            "defense": 164.9149218080352
+          }
+        },
+        {
+          "id": "duck-state",
+          "sectors": {
+            "agriculture": 170.34425449565813,
+            "manufacturing": 273.94911229383,
+            "services": 223.39905141754608,
+            "advanced": 534.6771766880292,
+            "defense": 164.92147068795083
+          }
+        },
+        {
+          "id": "eagle-state",
+          "sectors": {
+            "agriculture": 173.71875199954303,
+            "manufacturing": 271.21698473956604,
+            "services": 223.99374406275356,
+            "advanced": 535.290410364946,
+            "defense": 164.93951244046778
+          }
+        },
+        {
+          "id": "owl-state",
+          "sectors": {
+            "agriculture": 175.53508539346726,
+            "manufacturing": 276.95593910803694,
+            "services": 221.9374188211368,
+            "advanced": 593.1317564897073,
+            "defense": 167.40528599263192
+          }
+        },
+        {
+          "id": "pigeon-state",
+          "sectors": {
+            "agriculture": 175.62411487134202,
+            "manufacturing": 283.7924275396112,
+            "services": 223.6213057272815,
+            "advanced": 572.7520511595955,
+            "defense": 168.15952373939345
+          }
+        }
+      ]
+    }
+  ]
+}

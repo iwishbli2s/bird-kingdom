@@ -1,0 +1,9 @@
+import { selectControlledRuntime } from '../game/world';
+import { phaseLabels } from '../game/secessionConfig';
+import { speciesDefinitions } from '../game/populationConfig';
+import { countryInfo } from '../game/runtime';
+import type { GameState } from '../game/types';
+export default function SecessionView({game}:{game:GameState}) {
+  const r=selectControlledRuntime(game);
+  return <><section className="panel secession-panel" aria-label="자치권 및 분리주의"><div className="panel-heading"><h2>자치권 및 분리주의</h2><span>정치 사건을 통해 절차 진행</span></div><div className="secession-grid">{Object.values(r.secession??{}).map(m=><article className="secession-card" key={m.speciesId}><h3>{speciesDefinitions.find(s=>s.id===m.speciesId)!.name}</h3><strong>{phaseLabels[m.phase]}</strong><dl><div><dt>실제 자치권</dt><dd>{m.grantedAutonomy.toFixed(0)} / 100</dd></div><div><dt>자치 요구</dt><dd>{r.speciesPolitics?.[m.speciesId]?.autonomyDemand.toFixed(1)}</dd></div><div><dt>독립 성향</dt><dd>{r.speciesPolitics?.[m.speciesId]?.independenceSentiment.toFixed(1)}</dd></div><div><dt>현 단계 기간</dt><dd>{m.monthsInPhase}개월</dd></div></dl>{m.referendumScheduledInMonths!==null&&<p>투표 예정: {m.referendumScheduledInMonths===0?'이번 달 개표':`${m.referendumScheduledInMonths}개월 후`}</p>}{m.lastReferendumResult&&<p>최근 주민투표: {m.lastReferendumResult.passed?'가결':'부결'} · 찬성 {m.lastReferendumResult.yesShare.toFixed(1)}%</p>}</article>)}</div></section><section className="panel world-nations" aria-label="세계 국가 목록"><div className="panel-heading"><h2>세계 국가 목록</h2><span>{Object.keys(game.world.countries).length}개 국가</span></div>{Object.values(game.world.countries).map(c=><div key={c.id}><strong>{countryInfo(game,c.id).name}</strong><span>{c.identity?.status==='disputed_breakaway'?'분쟁 중인 독립국':'수립된 국가'}{c.identity?.territorialDispute==='parent_claims_reunification'?' · 부모국 재통합 주장':c.identity?.territorialDispute==='negotiating'?' · 협상 중':''}</span></div>)}</section></>;
+}

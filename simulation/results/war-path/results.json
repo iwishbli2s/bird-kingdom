@@ -1,0 +1,276 @@
+[
+  {
+    "scenario": "war",
+    "rows": [
+      {
+        "month": 1,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 57.876410140814336,
+            "readiness": 58.80159285353293
+          },
+          {
+            "id": "sparrow",
+            "capability": 52.47708231245763,
+            "readiness": 55.78812650221625
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 0,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 59.655494487989195,
+            "readiness": 62.21251452545449
+          },
+          {
+            "id": "sparrow",
+            "capability": 53.52772620539534,
+            "readiness": 58.72404828494008
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 0,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 60.83175659259778,
+            "readiness": 64.99145555870041
+          },
+          {
+            "id": "sparrow",
+            "capability": 54.105296183133305,
+            "readiness": 61.071590644656524
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 0,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 53.80065918537996,
+            "readiness": 66.54163302588661
+          },
+          {
+            "id": "sparrow",
+            "capability": 46.97044368165159,
+            "readiness": 62.6390891979365
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 0,
+            "resolution": "defense_success"
+          }
+        ]
+      },
+      {
+        "month": 30,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 51.73416800787853,
+            "readiness": 66.0822045731837
+          },
+          {
+            "id": "sparrow",
+            "capability": 46.017579675253046,
+            "readiness": 62.46755109006349
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 0,
+            "resolution": "defense_success"
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 51.07890449848538,
+            "readiness": 65.40778779817906
+          },
+          {
+            "id": "sparrow",
+            "capability": 44.80992095988654,
+            "readiness": 61.838767948635535
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 0,
+            "resolution": "defense_success"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scenario": "asymmetric",
+    "rows": [
+      {
+        "month": 1,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 39.53801194163208,
+            "readiness": 16
+          },
+          {
+            "id": "sparrow",
+            "capability": 79.58451181451056,
+            "readiness": 94
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 2.578100529702901,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 6,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 41.749403497003236,
+            "readiness": 21
+          },
+          {
+            "id": "sparrow",
+            "capability": 75.39167311868503,
+            "readiness": 89
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 11.475595961845583,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 12,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 44.17379527953992,
+            "readiness": 27
+          },
+          {
+            "id": "sparrow",
+            "capability": 69.7805297411359,
+            "readiness": 83.17729552476484
+          }
+        ],
+        "wars": [
+          {
+            "status": "active",
+            "control": 22.01021144605054,
+            "resolution": null
+          }
+        ]
+      },
+      {
+        "month": 24,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 42.76246468806268,
+            "readiness": 39
+          },
+          {
+            "id": "sparrow",
+            "capability": 55.375307696708546,
+            "readiness": 75.2078776351175
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 31.139723541721537,
+            "resolution": "status_quo"
+          }
+        ]
+      },
+      {
+        "month": 30,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 44.935630753818764,
+            "readiness": 45
+          },
+          {
+            "id": "sparrow",
+            "capability": 53.62760831292279,
+            "readiness": 72.6397324721071
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 31.139723541721537,
+            "resolution": "status_quo"
+          }
+        ]
+      },
+      {
+        "month": 36,
+        "military": [
+          {
+            "id": "pigeon",
+            "capability": 45.57890759248038,
+            "readiness": 51
+          },
+          {
+            "id": "sparrow",
+            "capability": 51.797161584789734,
+            "readiness": 70.57244274619448
+          }
+        ],
+        "wars": [
+          {
+            "status": "resolved",
+            "control": 31.139723541721537,
+            "resolution": "status_quo"
+          }
+        ]
+      }
+    ]
+  }
+]

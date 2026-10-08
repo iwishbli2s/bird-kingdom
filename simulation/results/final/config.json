@@ -1,0 +1,449 @@
+{
+  "balanceConfig": {
+    "economy": {
+      "cyclePersistence": 0.85,
+      "cycleShockWeight": 0.15,
+      "annualIndustryNoise": 0.004,
+      "annualGrowthMin": -0.08,
+      "annualGrowthMax": 0.12,
+      "neutralGrowth": 2,
+      "unemploymentResponse": 0.025,
+      "unemploymentMaxChange": 0.12,
+      "unemploymentMin": 1,
+      "unemploymentMax": 30,
+      "inflationAnchor": 2,
+      "inflationPersistence": 0.92,
+      "inflationGrowthPressure": 0.18,
+      "inflationCyclePressure": 0.5,
+      "inflationLaborPressure": 0.08,
+      "neutralUnemployment": 5,
+      "inflationMaxChange": 0.15,
+      "inflationMin": -5,
+      "inflationMax": 30
+    },
+    "industries": {
+      "agriculture": {
+        "name": "농업",
+        "annualGrowth": 0.01,
+        "annualProductivityGrowth": 0.001,
+        "cycleSensitivity": 0.018
+      },
+      "manufacturing": {
+        "name": "제조업",
+        "annualGrowth": 0.02,
+        "annualProductivityGrowth": 0.002,
+        "cycleSensitivity": 0.045
+      },
+      "services": {
+        "name": "서비스업",
+        "annualGrowth": 0.022,
+        "annualProductivityGrowth": 0.0015,
+        "cycleSensitivity": 0.025
+      },
+      "advanced": {
+        "name": "첨단산업",
+        "annualGrowth": 0.04,
+        "annualProductivityGrowth": 0.003,
+        "cycleSensitivity": 0.04
+      },
+      "defense": {
+        "name": "군수산업",
+        "annualGrowth": 0.015,
+        "annualProductivityGrowth": 0.001,
+        "cycleSensitivity": 0.02
+      }
+    },
+    "fiscal": {
+      "incomeTaxBase": 0.55,
+      "corporateTaxBase": 0.18,
+      "consumptionTaxBase": 0.65,
+      "baseAnnualInterestRate": 3,
+      "safeDebtRatio": 0.6,
+      "interestRiskCoefficient": 8,
+      "maxAnnualInterestRate": 20
+    },
+    "population": {
+      "neutralGrowth": 2,
+      "neutralUnemployment": 5,
+      "birthGrowthResponse": 0.01,
+      "birthUnemploymentResponse": 0.015,
+      "birthEconomicMin": 0.85,
+      "birthEconomicMax": 1.1,
+      "migrationGrowthResponse": 0.08,
+      "migrationUnemploymentResponse": 0.12,
+      "migrationMin": -2,
+      "migrationMax": 2,
+      "neutralSocial": 50,
+      "healthcareDeathResponse": -0.001,
+      "livingMigrationResponse": 0.002,
+      "welfareBirthResponse": 0.01,
+      "budgetMultiplierMin": 0.9,
+      "budgetMultiplierMax": 1.1,
+      "monthsPerYear": 12
+    },
+    "social": {
+      "min": 0,
+      "max": 100,
+      "neutralGrowth": 2,
+      "neutralUnemployment": 5,
+      "neutralInflation": 2,
+      "neutralSocial": 50,
+      "living": {
+        "growth": 0.5,
+        "unemployment": 2.2,
+        "inflation": 1.8,
+        "welfare": 1.5,
+        "healthcare": 0.4,
+        "incomeTax": -0.12,
+        "consumptionTax": -0.18,
+        "inequality": 0.15,
+        "inequalityThreshold": 60,
+        "inequalityExtra": 0.4
+      },
+      "education": {
+        "budget": 5,
+        "research": 0.3,
+        "growth": 0.15,
+        "unemployment": 0.1
+      },
+      "healthcare": {
+        "budget": 5,
+        "living": 0.08,
+        "growth": 0.1,
+        "unemployment": 0.1
+      },
+      "safety": {
+        "budget": 6,
+        "unemployment": 1.5,
+        "unemploymentThreshold": 10,
+        "unemploymentExtra": 1,
+        "inequality": 0.12,
+        "inequalityThreshold": 70,
+        "inequalityExtra": 0.4,
+        "living": 0.1
+      },
+      "inequality": {
+        "unemployment": 1.2,
+        "welfare": -4,
+        "incomeTax": -0.15,
+        "growth": 0.05,
+        "advancedThreshold": 40,
+        "advanced": 0.03
+      },
+      "speed": {
+        "livingStandard": 0.05,
+        "education": 0.02,
+        "healthcare": 0.035,
+        "publicSafety": 0.05,
+        "inequality": 0.025
+      },
+      "limit": {
+        "livingStandard": 1,
+        "education": 0.4,
+        "healthcare": 0.6,
+        "publicSafety": 1,
+        "inequality": 0.5
+      }
+    },
+    "speciesPolitics": {
+      "min": 0,
+      "max": 100,
+      "satisfactionSpeed": 0.08,
+      "satisfactionMaxChange": 2,
+      "influenceSpeed": 0.03,
+      "influenceMaxChange": 0.5,
+      "autonomySpeed": 0.03,
+      "autonomyMaxChange": 1,
+      "independenceSpeed": 0.015,
+      "independenceMaxChange": 0.5,
+      "neutralGrowth": 2,
+      "neutralUnemployment": 5,
+      "neutralInflation": 2,
+      "growthEffect": 0.3,
+      "unemploymentEffect": 1.2,
+      "inflationEffect": 0.7,
+      "incomeTaxEffect": -0.25,
+      "consumptionTaxEffect": -0.35,
+      "neutralLivingStandard": 50,
+      "livingStandardEffect": 0.2,
+      "inequalityEffect": -0.12,
+      "publicSafetyEffect": 0.08,
+      "healthcareEffect": 0.06,
+      "educationEffect": 0.04,
+      "satisfactionComfort": 60,
+      "satisfactionLow": 40,
+      "satisfactionVeryLow": 25,
+      "autonomyComfortEffect": -0.2,
+      "autonomyLowEffect": 0.7,
+      "autonomyVeryLowEffect": 0.8,
+      "autonomyRepresentationEffect": 0.8,
+      "neutralIntegration": 60,
+      "autonomyIntegrationEffect": 0.3,
+      "autonomyThresholds": [
+        40,
+        60,
+        75
+      ],
+      "autonomyPressureSlopes": [
+        0.5,
+        1.6666666666666667,
+        1.4
+      ],
+      "independenceDistressSpan": 40,
+      "independenceRepresentationEffect": 0.2,
+      "independenceIntegrationEffect": 0.2,
+      "independenceRecoverySatisfaction": 65,
+      "independenceRecoveryEffect": 0.15,
+      "independenceIntegrationRecovery": 0.04,
+      "defaultBaseline": {
+        "satisfaction": 60,
+        "influenceBias": 0,
+        "autonomyDemand": 10,
+        "independenceSentiment": 3
+      }
+    },
+    "politics": {
+      "min": 0,
+      "max": 100,
+      "neutralGrowth": 2,
+      "neutralUnemployment": 5,
+      "neutralInflation": 2,
+      "neutralSocial": 50,
+      "speed": {
+        "approval": 0.08,
+        "stability": 0.05,
+        "integration": 0.025
+      },
+      "limit": {
+        "approval": 2,
+        "stability": 1.2,
+        "integration": 0.6
+      },
+      "approval": {
+        "baseline": 50,
+        "growth": 0.3,
+        "unemployment": 1.2,
+        "inflation": 0.9,
+        "living": 0.35,
+        "inequality": -0.08,
+        "safety": 0.08,
+        "satisfaction": 0.35,
+        "incomeTax": -0.1,
+        "consumptionTax": -0.12,
+        "corporateTax": -0.03,
+        "balance": 0.1,
+        "balanceLimit": 0.5,
+        "debtThreshold": 2,
+        "debt": 0.4,
+        "debtLimit": 2
+      },
+      "stability": {
+        "baseline": 65,
+        "safety": 0.3,
+        "unemployment": 0.5,
+        "inequality": -0.08,
+        "approvalThreshold": 50,
+        "approvalSevere": 30,
+        "approval": 0.15,
+        "approvalExtra": 0.3,
+        "satisfactionThreshold": 50,
+        "satisfaction": 0.2,
+        "autonomy": 0.12,
+        "independence": 0.35,
+        "crisis": 0.3
+      },
+      "integration": {
+        "baseline": 65,
+        "satisfaction": 0.25,
+        "autonomy": 0.12,
+        "independence": 0.3,
+        "inequality": -0.08,
+        "living": 0.1
+      },
+      "distress": {
+        "satisfactionThreshold": 40,
+        "satisfaction": 1,
+        "autonomyThreshold": 40,
+        "autonomy": 0.5,
+        "independenceThreshold": 20,
+        "independence": 1,
+        "limit": 100
+      }
+    },
+    "elections": {
+      "termLengthMonths": {
+        "president": 48,
+        "governor": 48
+      },
+      "historyLength": 12,
+      "neutral": {
+        "approval": 50,
+        "social": 50,
+        "growth": 2,
+        "unemployment": 5,
+        "inflation": 2
+      },
+      "weight": {
+        "currentApproval": 0.7,
+        "averageApproval": 0.3,
+        "living": 0.2,
+        "growth": 1.2,
+        "unemployment": 1.5,
+        "inflation": 0.5,
+        "stability": 0.15,
+        "integration": 0.05,
+        "satisfaction": 0.08,
+        "crisis": 0.03
+      },
+      "unemploymentThreshold": 10,
+      "unemploymentExtra": 0.5,
+      "deflationThreshold": -2,
+      "deflation": 0.3,
+      "stabilityThreshold": 30,
+      "stabilityExtra": 0.15,
+      "logisticScale": 9,
+      "minimumChance": 0.02,
+      "maximumChance": 0.98
+    },
+    "events": {
+      "maxIndividualChance": 0.4,
+      "maxCombinedChance": 0.75,
+      "outcomeMin": 0.9,
+      "outcomeSpread": 0.2,
+      "historyChainMonths": 12,
+      "inflationMin": -5,
+      "inflationMax": 30
+    },
+    "secession": {
+      "organizingAutonomy": 45,
+      "organizingIndependence": 25,
+      "charterMonths": 6,
+      "campaignMonths": 12,
+      "minimumActiveMonths": 24,
+      "referendumAutonomy": 65,
+      "referendumIndependence": 50,
+      "ballotDelay": 6,
+      "transitionMonths": 6,
+      "refusalWindow": 24,
+      "unilateralIndependence": 80,
+      "unilateralAutonomy": 80,
+      "unilateralSatisfaction": 25,
+      "unilateralIntegration": 35,
+      "majorityTransferMin": 0.35,
+      "majorityTransferRange": 0.35,
+      "minorityTransfer": 0.025,
+      "autonomySatisfaction": 0.08,
+      "autonomyDemandRelief": 0.18,
+      "autonomyIndependenceRelief": 0.1
+    },
+    "diplomacy": {
+      "cooldownMonths": 3,
+      "improveCostRate": 0.0005,
+      "tradeAnnualBonus": 0.004,
+      "sanctionTradeFactor": 0.2,
+      "sanctionTargetPenalty": 0.002,
+      "tradeLossPenalty": 0.003,
+      "maxAnnualTradeAdjustment": 0.006,
+      "passageAnnualMigration": 0.03,
+      "initial": {
+        "relations": 20,
+        "trust": 45,
+        "threat": 25,
+        "tradeLevel": 35
+      }
+    },
+    "warfare": {
+      "maxControlChange": 5,
+      "monthlyNoise": 0.4,
+      "occupationThreshold": 75,
+      "decisiveThreshold": 90,
+      "decisiveMonths": 3,
+      "fatigueGrowth": 1.1,
+      "recovery": 0.8,
+      "warCostRate": 0.0008,
+      "ceasefireCostRate": 0.0001,
+      "industryLoss": 0.0015,
+      "occupationLoss": 0.003,
+      "occupationRevenueLoss": 0.15,
+      "frontMigrationOutflow": 0.00008,
+      "truceMonths": 12,
+      "mobilizationStep": 5,
+      "readinessStep": 1,
+      "defenseBudgetStep": 0.15,
+      "longWarMonths": 12,
+      "mandatoryPeaceMonths": 120
+    },
+    "technology": {
+      "slots": 3,
+      "maxLevel": 10,
+      "maxGrowth": 0.006,
+      "maxProductivity": 0.25,
+      "maxSocial": 4,
+      "maxMortalityReduction": 0.15,
+      "maxReadiness": 6,
+      "maxLogistics": 6,
+      "maxCapability": 4,
+      "maxResearch": 0.15,
+      "maxDamageReduction": 0.3,
+      "diffusion": 0.05
+    },
+    "crisis": {
+      "maxCombinedDamage": 1.5,
+      "maxMortalityMultiplier": 1.8,
+      "maxMigrationPenalty": 0.35,
+      "maxGrowthPenalty": -0.09,
+      "maxLeaderMortalityAddition": 0.0003,
+      "spreadChanceScale": 0.035
+    },
+    "mortality": {
+      "startingAgeMonths": 12,
+      "initialMonthlyRisk": 0.00001,
+      "riskGrowthYears": 8,
+      "maxNaturalRisk": 0.999999
+    },
+    "adjustments": {
+      "sectorShareThreshold": 1.5,
+      "sectorGrowthPressure": 0.02,
+      "distressedDebtRatio": 1,
+      "distressedInterestCeiling": 8,
+      "distressedInterestScale": 0.6,
+      "fiscalEmergencyUrgency": 85,
+      "fiscalEmergencyTaxStep": 1.5
+    }
+  },
+  "difficultyConfig": {
+    "easy": {
+      "label": "쉬움",
+      "description": "큰 경제 충격과 위기 피해 10% 감소, 회복 10% 빠름, 재선확률 +4%p, 상황위험 10% 감소.",
+      "modifiers": {
+        "economicShock": 0.9,
+        "crisisDamage": 0.9,
+        "crisisRecovery": 1.1,
+        "electionTolerance": 0.04,
+        "situationalMortality": 0.9
+      }
+    },
+    "normal": {
+      "label": "보통",
+      "description": "기본 규칙입니다. 세계와 NPC는 모든 난이도에서 같은 규칙을 사용합니다.",
+      "modifiers": {
+        "economicShock": 1,
+        "crisisDamage": 1,
+        "crisisRecovery": 1,
+        "electionTolerance": 0,
+        "situationalMortality": 1
+      }
+    },
+    "hard": {
+      "label": "어려움",
+      "description": "큰 경제 충격과 위기 피해 10% 증가, 회복 10% 느림, 재선확률 −4%p, 상황위험 10% 증가.",
+      "modifiers": {
+        "economicShock": 1.1,
+        "crisisDamage": 1.1,
+        "crisisRecovery": 0.9,
+        "electionTolerance": -0.04,
+        "situationalMortality": 1.1
+      }
+    }
+  }
+}

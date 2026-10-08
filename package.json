@@ -1,0 +1,29 @@
+{
+  "name": "bird-kingdom",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "balance": "tsx simulation/run.ts candidate src",
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "tsx --test tests/game.test.ts tests/world.test.ts tests/mortality.test.ts tests/economy.test.ts tests/fiscal.test.ts tests/budget.test.ts tests/population.test.ts tests/speciesPolitics.test.ts tests/social.test.ts tests/governance.test.ts tests/election.test.ts tests/events.test.ts tests/secession.test.ts tests/conflict.test.ts tests/diplomacy.test.ts tests/warfare.test.ts tests/technology.test.ts tests/crises.test.ts tests/ai.test.ts tests/strategicAI.test.ts tests/history.test.ts tests/saveLoad.test.ts tests/difficulty.test.ts tests/convergence.test.ts tests/tutorial.test.ts",
+    "balance:convergence": "tsx simulation/convergenceRun.ts",
+    "tutorial:regression": "tsx simulation/tutorialRegression.ts"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  }
+}

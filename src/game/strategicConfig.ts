@@ -1,0 +1,4 @@
+import type { ForeignPolicyPosture } from './strategicTypes';
+export const strategicConfig={evaluationMonths:3,postureHoldMonths:9,postureMargin:12,minimumUtility:24,warThreshold:110,pairHoldMonths:12,recordLimit:48,mobilizationCooldown:3,postTreatyWarDelay:12,maxTargets:4};
+export const strategicReasons={THREAT:'HIGH_EXTERNAL_THREAT',TRADE:'HIGH_TRADE_VALUE',COMMON_ENEMY:'COMMON_ENEMY',BREAKAWAY:'BREAKAWAY_DISPUTE',ADVANTAGE:'MILITARY_ADVANTAGE',EXHAUSTION:'WAR_EXHAUSTION',CASH:'LOW_TREASURY',CRISIS:'SEVERE_DOMESTIC_CRISIS',ALLY:'ALLY_REQUEST',TRUCE:'TRUCE_ACTIVE',LEGAL:'LEGAL_INDEPENDENCE',RECOVERY:'PEACE_RECOVERY',COMPROMISE:'AUTONOMY_COMPROMISE',REFUSAL_COST:'REFERENDUM_REFUSAL_COST'} as const;
+export const postureLabels:Record<ForeignPolicyPosture,string>={cooperative:'협력적',commercial:'통상 중심',cautious:'신중한 관계 관리',defensive:'방어적',assertive:'적극적 압박',survival:'국가 생존 우선'};
