@@ -12,7 +12,7 @@ export function getPeaceBlock(game:GameState,warId:string,resolution:WarResoluti
   if(resolution==='territory_transfer'){
     if(!['border_claim','reunification'].includes(war.warGoal)||!war.fronts.length)return '영토 전쟁목표가 필요합니다.';
     if(!war.fronts.every(f=>f.controllerCountryId===war.primaryAttacker&&f.decisiveMonths>=config.decisiveMonths))return '목표 영토의 90% 통제를 3개월 유지해야 합니다.';
-    const losers=new Set(war.fronts.map(f=>game.world.regions[f.regionId]?.ownerCountryId));for(const id of losers){if(!id||!game.world.countries[id])return '영토 소유국이 유효하지 않습니다.';if(!game.world.countries[id].identity?.isDynamic&&ownedRegions(game.world,id).length<=war.fronts.filter(f=>game.world.regions[f.regionId].ownerCountryId===id).length)return '시작 국가의 마지막 영토는 이전할 수 없습니다.';}
+    const losers=new Set(war.fronts.map(f=>game.world.regions[f.regionId]?.ownerCountryId));for(const id of losers){if(!id||!game.world.countries[id])return '영토 소유국이 유효하지 않습니다.';}
   }
   if(resolution==='defense_success'&&war.strategicControl>25)return '공격측을 저지한 방어 우세가 필요합니다.';
   if(resolution==='recognition'&&!['recognition','reunification'].includes(war.warGoal))return '독립 승인 또는 재통합 관련 전쟁목표가 필요합니다.';

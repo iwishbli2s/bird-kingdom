@@ -1,7 +1,7 @@
+import {dissolveCountry} from './countryDissolution';
+import {materializeDirectCore,directTerritoryShare} from './territory';
 import { recordCrisisTerritoryChange } from './crisis';
 import { mergeTechnologyStates } from './technologyEffects';
-import { synchronizeMilitary } from './military';
-import { synchronizeDiplomacy } from './diplomacy';
 import { aggregateFederationEconomy, annualizedGrowth, sumIndustryOutput } from './economy';
 import { aggregateFederationPopulation } from './population';
 import { ownedRegions, refreshCountryAggregates } from './runtime';
@@ -31,6 +31,7 @@ export function mergeFiscal(parent:FiscalState,child:FiscalState):FiscalState {
     expenditure:{...parent.expenditure,...(parent.expenditure.emergency||child.expenditure.emergency?{emergency:(parent.expenditure.emergency??0)+(child.expenditure.emergency??0)}:{}),programTotal:parent.expenditure.programTotal+child.expenditure.programTotal,interest:parent.expenditure.interest+child.expenditure.interest,total:parent.expenditure.total+child.expenditure.total,categories:Object.fromEntries(Object.keys(parent.expenditure.categories).map(key=>[key,parent.expenditure.categories[key as keyof typeof parent.expenditure.categories]+child.expenditure.categories[key as keyof typeof child.expenditure.categories]])) as typeof parent.expenditure.categories},hasIssuedDebt:parent.hasIssuedDebt||child.hasIssuedDebt};
 }
 export function reintegrateCountry(game:GameState,conflict:InternalConflictState,negotiated:boolean):GameState {
+  game=materializeDirectCore(game,conflict.parentCountryId);
   const parent=game.world.countries[conflict.parentCountryId],child=game.world.countries[conflict.breakawayCountryId];if(!parent||!child)throw new Error('재통합 당사국이 존재하지 않습니다.');
   const members=ownedRegions(game.world,child.id);let countries={...game.world.countries},regions={...game.world.regions};
   const primary=child.identity!.primarySpeciesId;
@@ -41,6 +42,7 @@ export function reintegrateCountry(game:GameState,conflict:InternalConflictState
     regions[r.id]=r;
   }
   if(parent.simulationMode!=='aggregate_regions'){
+    for(const r of Object.values(game.world.regions).filter(r=>r.ownerCountryId===parent.id))regions[r.id]={...r,directAssetWeight:directTerritoryShare(game.world,r)*parent.economy.gdp};
     const transferred=members.map(r=>regions[r.id]);let merged=structuredClone(parent);
     merged.economy=aggregateFederationEconomy(parent.economy,[parent.economy,...transferred.map(r=>r.economy)]);
     merged.population=aggregateFederationPopulation([parent.population,...transferred.map(r=>r.population)]);
@@ -51,23 +53,15 @@ export function reintegrateCountry(game:GameState,conflict:InternalConflictState
     const movement=transferred[0]?.secession?.[primary];if(movement)merged.secession={...merged.secession,[primary]:{...movement,jurisdictionId:parent.id}};
     countries[parent.id]=merged;
     // 직접 국가로 자산을 합쳤으므로 영토는 행정용으로 보존하고 중복 시뮬레이션하지 않습니다.
-    for(const r of transferred){const zero=structuredClone(r);zero.simulationRole='administrative';zero.economy={...zero.economy,gdp:0,industries:Object.fromEntries(Object.entries(zero.economy.industries).map(([id,i])=>[id,{...i,output:0}])) as typeof zero.economy.industries};zero.population={species:{},total:0,birthsLastMonth:0,deathsLastMonth:0,netMigrationLastMonth:0};zero.fiscal={...zero.fiscal,treasury:0,debt:0,monthlyBalance:0,revenue:{incomeTax:0,corporateTax:0,consumptionTax:0,total:0},expenditure:{...zero.fiscal.expenditure,...(zero.fiscal.expenditure.emergency!==undefined?{emergency:0}:{}),programTotal:0,interest:0,total:0,categories:Object.fromEntries(Object.keys(zero.fiscal.expenditure.categories).map(id=>[id,0])) as typeof zero.fiscal.expenditure.categories}};regions[r.id]=zero;}
+    for(const r of transferred){const zero=structuredClone(r);zero.directAssetWeight=r.economy.gdp;zero.simulationRole='administrative';zero.economy={...zero.economy,gdp:0,industries:Object.fromEntries(Object.entries(zero.economy.industries).map(([id,i])=>[id,{...i,output:0}])) as typeof zero.economy.industries};zero.population={species:{},total:0,birthsLastMonth:0,deathsLastMonth:0,netMigrationLastMonth:0};zero.fiscal={...zero.fiscal,treasury:0,debt:0,monthlyBalance:0,revenue:{incomeTax:0,corporateTax:0,consumptionTax:0,total:0},expenditure:{...zero.fiscal.expenditure,...(zero.fiscal.expenditure.emergency!==undefined?{emergency:0}:{}),programTotal:0,interest:0,total:0,categories:Object.fromEntries(Object.keys(zero.fiscal.expenditure.categories).map(id=>[id,0])) as typeof zero.fiscal.expenditure.categories}};regions[r.id]=zero;}
   }
-  delete countries[child.id];
-  const retiredCountryIdentities={...game.world.retiredCountryIdentities,[child.id]:structuredClone(child.identity!)};
-  const internalConflicts=Object.fromEntries(Object.entries(game.world.internalConflicts??{}).map(([id,c])=>[id,c.status==='resolved'||id===conflict.id?c:c.parentCountryId===child.id?{...c,parentCountryId:parent.id,parentName:parent.identity!.name}:c.breakawayCountryId===child.id?{...c,status:'resolved' as const,resolution:'forced_reintegration' as const,resolvedDate:{...game.date}}:c]));
-  let world=synchronizeMilitary(synchronizeDiplomacy(refreshCountryAggregates({...game.world,countries,regions,retiredCountryIdentities,internalConflicts})));
-  const closedWars=Object.values(world.warfare!.wars).filter(w=>w.status==='resolved'&&game.world.warfare?.wars[w.id]?.status!=='resolved');
-  if(closedWars.length){const state=world.warfare!;world={...world,warfare:{...state,wars:{...state.wars,...Object.fromEntries(closedWars.map(w=>[w.id,{...w,resolvedDate:{...game.date}}]))},history:[...closedWars.map(w=>({id:'war-removed-'+w.id+'-'+game.turn,date:{...game.date},turn:game.turn,warId:w.id,countryNames:{...w.countryNames},summary:w.countryNames[w.primaryAttacker]+' — '+w.countryNames[w.primaryDefender]+': 참전국 재통합에 따른 전쟁 종료'})),...state.history]}};}
-  const history=game.world.diplomacy?.history??[];world={...world,diplomacy:{...world.diplomacy!,history:[{id:`diplomacy-remove-${child.id}-${game.turn}`,date:{...game.date},turn:game.turn,actorId:parent.id,targetId:child.id,actorName:parent.identity!.name,targetName:child.identity!.name,action:'country_removed',accepted:true,relationSnapshots:Object.values(game.world.diplomacy?.relations??{}).filter(r=>r.countryA===child.id||r.countryB===child.id).map(r=>({...r})),summary:`${child.identity!.name} 재통합: 활성 외교관계 정리`},...history]}};
-  const removedRef=(j:{kind:string;id:string})=>(j.kind==='country'&&j.id===child.id)||(j.kind==='region'&&regions[j.id]?.simulationRole==='administrative');
-  const events={...game.events,pendingEvent:game.events.pendingEvent&&(removedRef(game.events.pendingEvent.jurisdiction)||game.events.pendingEvent.diplomaticTargetId===child.id||(game.events.pendingEvent.warId&&world.warfare!.wars[game.events.pendingEvent.warId]?.status==='resolved'))?null:game.events.pendingEvent,
-    activeEffects:game.events.activeEffects.filter(e=>!removedRef(e.jurisdiction)&&!e.effects.some(effect=>effect.kind==='diplomacy'&&effect.targetId===child.id)),cooldowns:Object.fromEntries(Object.entries(game.events.cooldowns).filter(([key])=>!key.startsWith(`country:${child.id}:`)))};
+  const cleaned=dissolveCountry({...game,world:{...game.world,countries,regions}},child.id,{successorId:parent.id,reintegrationConflictId:conflict.id});
+  const world=cleaned.world,events=cleaned.events;
   // 자산 이전 시 보존하고, 강제 재통합의 복구 비용은 다음 세 달에 납부합니다.
   if(!negotiated){const target=parent.simulationMode==='aggregate_regions'?{kind:'region' as const,id:members[0].id}:{kind:'country' as const,id:parent.id};
     events.activeEffects.push({id:'reconstruction-'+conflict.id,sourceEventId:'conflict-parent-victory',jurisdiction:target,remainingMonths:3,effects:[{kind:'treasury',amount:-child.economy.gdp*.001},{kind:'social',metric:'livingStandard',delta:-.3}]});
   }
   const defeated=game.player.controlledCountryId===child.id;
-  return recordCrisisTerritoryChange(game,{...game,world,events,gameOverReason:defeated?'state_defeat':game.gameOverReason,
+  return recordCrisisTerritoryChange(game,{...cleaned,world,events,gameOverReason:defeated?'state_defeat':game.gameOverReason,
     player:defeated?{...game.player,controlledCountryId:parent.id,controlledRegionId:null,defeatedCountryId:child.id}:game.player});
 }

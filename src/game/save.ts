@@ -135,6 +135,7 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
     ][]) {
         if (r.id !== id || !raw.world.countries[r.ownerCountryId])
             fail();
+        if(r.directAssetWeight!==undefined)num(r.directAssetWeight,0);
         numeric(r.economy, ['gdp', 'growth', 'unemployment', 'inflation']);
         numeric(r.fiscal, ['treasury', 'debt']);
         numeric(r.population, ['total']);

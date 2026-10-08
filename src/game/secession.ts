@@ -1,6 +1,8 @@
 import {withGameRandom} from './randomState';
 import {synchronizePolicySchedules} from './policySchedule';
 import { collectHistory } from './history';
+import {dissolveCountry} from './countryDissolution';
+import {sovereignTerritories} from './territory';
 import { synchronizeGovernmentAI } from './aiState';
 import { parentReferendumResponse } from './strategicParent';
 import { inheritSplitCrises, recordCrisisTerritoryChange } from './crisis';
@@ -144,10 +146,15 @@ function createBreakawayCountryCore(game:GameState,j:Jurisdiction,speciesId:Spec
   const controlled=controlledRegionId(game)===regionId;
   let next={...game,world,player:controlled?{...game.player,controlledCountryId:countryId,controlledRegionId:null,career:{...game.player.career,office:'president' as const}}:game.player};
   if(j.kind==='country')next=inheritSplitCrises(next,j,{kind:'region',id:regionId},region.population.total/(region.population.total+parent.population.total));
-  next=recordCrisisTerritoryChange(game,next);
   next={...next,world:synchronizeGovernmentAI(next.world)};
-  const withConflict=disputed?createInternalConflict(next,parentCountryId,countryId,source.speciesPolitics[speciesId]!.independenceSentiment):next;
-  return appendGameLog(withConflict,{category:'political',type:'event',message:`${name} 수립 · ${disputed?'일방 독립, 영토 분쟁 지속':'주민투표와 이행 절차에 따른 독립'}`});
+  // Ownership, not the initial federation's four-state definition, determines
+  // whether a parent government still has a sovereign jurisdiction.
+  if(!sovereignTerritories(next.world,parentCountryId).length){
+    next=dissolveCountry(next,parentCountryId,{successorId:countryId});
+    if(disputed)next={...next,world:{...next.world,countries:{...next.world.countries,[countryId]:{...next.world.countries[countryId],identity:{...next.world.countries[countryId].identity!,status:'established',territorialDispute:'none'}}}}};
+  }
+  const withConflict=disputed&&next.world.countries[parentCountryId]?createInternalConflict(next,parentCountryId,countryId,source.speciesPolitics[speciesId]!.independenceSentiment):next;
+  return appendGameLog(recordCrisisTerritoryChange(game,withConflict),{category:'political',type:'event',message:`${name} 수립 · ${disputed?'일방 독립, 영토 분쟁 지속':'주민투표와 이행 절차에 따른 독립'}`});
 }
 
 export function createBreakawayCountry(...args:Parameters<typeof createBreakawayCountryCore>):GameState { return synchronizePolicySchedules(args[0],collectHistory(args[0],createBreakawayCountryCore(...args))); }

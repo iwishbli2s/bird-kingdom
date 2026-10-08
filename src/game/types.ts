@@ -174,6 +174,8 @@ export interface RegionRuntimeState {
   id: RegionId;
   /** 직접 계산 국가에 합쳐진 영토는 행정 메타데이터만 보존합니다. */
   simulationRole?: 'active' | 'administrative';
+  /** Relative asset share of a district merged into a directly simulated ledger. */
+  directAssetWeight?: number;
   regionIdentity?: RegionRuntimeIdentity;
   secession?: SecessionState;
   ownerCountryId: CountryId;

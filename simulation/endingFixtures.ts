@@ -4,7 +4,8 @@ import {createBreakawayCountry} from '../src/game/secession';
 import {addCasusBelli} from '../src/game/casusBelli';
 import {declareWar} from '../src/game/warfare';
 import {resolvePeace} from '../src/game/peace';
-import {synchronizeDiplomacy} from '../src/game/diplomacy';
+import {conquer} from './sovereigntyScenarios';
+import {directCoreId} from '../src/game/territory';
 import {collectHistory} from '../src/game/history';
 import {evaluateAchievements} from '../src/game/achievements';
 import type {GameState,SpeciesId} from '../src/game/types';
@@ -15,9 +16,6 @@ export function independentFixture(regionId='eagle-state'):GameState {
 }
 export function federationWarFixture(regionId='eagle-state'):GameState {
  let g=independentFixture(regionId),actor=g.player.controlledCountryId;
- // Existing peace rules protect the initial federation's last territory. This fixture
- // treats its identity as dynamic solely to exercise the already-supported absorption API.
- g.world.countries.pigeon.identity!.isDynamic=true;
  const target=Object.values(g.world.regions).find(r=>r.ownerCountryId==='pigeon')!.id;
  g=addCasusBelli(g,actor,'pigeon','territorial_dispute',target);
  const belli=Object.values(g.world.warfare!.casusBelli).find(b=>b.holderCountryId===actor&&!b.consumed)!;
@@ -28,7 +26,7 @@ export function federationWarFixture(regionId='eagle-state'):GameState {
  return g;
 }
 export function reverseFederationFixture(regionId='eagle-state'){const g=federationWarFixture(regionId);return resolvePeace(g,Object.values(g.world.warfare!.wars).at(-1)!.id,'territory_transfer');}
-export function unifiedFixture(){const g=reverseFederationFixture(),next=structuredClone(g);delete next.world.countries.sparrow;next.world=synchronizeDiplomacy(next.world);return collectHistory(g,next);}
+export function unifiedFixture(){const g=reverseFederationFixture();return conquer(g,g.player.controlledCountryId,'sparrow',directCoreId('sparrow'));}
 export function deathFixture(){return advanceMonth(createGame('sparrow',null,2030),{mortalityRiskOverride:1,crisisRandom:()=>.99,eventOccurrenceRandom:()=>.99});}
 export function stateDefeatWarFixture(){
  let g=independentFixture(),target=g.player.controlledCountryId;

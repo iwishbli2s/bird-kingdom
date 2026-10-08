@@ -1,10 +1,12 @@
+import {directCoreId, materializeDirectCore} from './territory';
 import { ownedRegions } from './runtime';
 import { countriesAtWar, synchronizeMilitary } from './military';
 import { getBilateralRelation, getDiplomaticPairKey } from './diplomacy';
 import type { CasusBelliType, GameState, WarGoal, WorldState } from './types';
 export function addCasusBelli(game:GameState,holder:string,target:string,type:CasusBelliType,regionId:string|null=null,months:number|null=12):GameState {
   if(holder===target||!game.world.countries[holder]||!game.world.countries[target])throw new Error('명분 당사국이 유효하지 않습니다.');
-  if(regionId&&(!game.world.regions[regionId]||game.world.regions[regionId].ownerCountryId!==target||game.world.regions[regionId].simulationRole==='administrative'))throw new Error('명분의 목표 영토가 유효하지 않습니다.');
+  if(regionId===directCoreId(target))game=materializeDirectCore(game,target);
+  if(regionId&&(!game.world.regions[regionId]||game.world.regions[regionId].ownerCountryId!==target))throw new Error('명분의 목표 영토가 유효하지 않습니다.');
   if(months!==null&&(!Number.isInteger(months)||months<=0))throw new RangeError('명분 유효기간은 양의 개월입니다.');
   const world=synchronizeMilitary(game.world),existing=Object.values(world.warfare!.casusBelli).find(b=>b.holderCountryId===holder&&b.targetCountryId===target&&b.type===type&&b.targetRegionId===regionId&&!b.consumed&&b.expiresInMonths!==0);
   if(existing)return {...game,world};let n=1;while(world.warfare!.casusBelli[`cb-${n}`])n++;
@@ -21,7 +23,7 @@ export function updateCasusBelli(game:GameState):GameState {
 }
 export function getAccessibleWarTargets(world:WorldState,belliId:string):string[] {
   const b=world.warfare?.casusBelli[belliId];if(!b||b.consumed||b.expiresInMonths===0||!b.targetRegionId)return [];
-  const r=world.regions[b.targetRegionId];return r&&r.ownerCountryId===b.targetCountryId&&r.simulationRole!=='administrative'?[r.id]:[];
+  const r=world.regions[b.targetRegionId];return r&&r.ownerCountryId===b.targetCountryId?[r.id]:[];
 }
 export function getWarDeclarationBlock(game:GameState,actor:string,belliId:string,goal:WarGoal,ignorePending=false):string|null {
   if(game.gameOverReason||!game.player.alive)return '운영이 종료되었습니다.';

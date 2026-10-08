@@ -1,3 +1,4 @@
+import {sovereignTerritories} from './territory';
 import { countriesAtWar } from './military';
 import { countryName, getBilateralRelation, getDiplomaticActionBlock, hasSanctions, isRecognized } from './diplomacy';
 import type { DiplomaticAction, EventContext, EventEffect, GameEventDefinition } from './types';
@@ -32,7 +33,7 @@ export const diplomacyEventDefinitions:readonly GameEventDefinition[]=stages.map
       if(stage.id==='wetland'){effects.push({kind:'industry',industryId:'agriculture',multiplier:1.001});if(c.runtime.population.species.duck)effects.push({kind:'species',speciesId:'duck',metric:'satisfaction',delta:.5},{kind:'population',speciesId:'duck',flow:'migration',ratio:.00001});}
       return {immediate:effects};}},
     {id:'balance',label:'대표편대 조정 회담',preview:'관계 +1 · 신뢰 +0.2, 별도 조약·승인·제재 변경 없음.',effects:c=>({immediate:[{kind:'diplomacy',targetId:diplomaticTarget(c,`diplomacy-${stage.id}`)!,relations:1,trust:.2}]})},
-    {id:'restrict',label:'강경 항의·제안 거절',preview:'관계 -4 · 신뢰 -1 · 위협이 6개월 상승합니다. 전쟁은 발생하지 않습니다.',effects:c=>{const targetId=diplomaticTarget(c,`diplomacy-${stage.id}`)!;const immediate:EventEffect[]=[{kind:'diplomacy',targetId,relations:-4,trust:-1,threatShockMonths:6}];if(stage.id==='boundary'||stage.id==='retaliation')immediate.push({kind:'casus_belli',targetId,type:stage.id==='boundary'?'border_incident':'sanctions_escalation',regionId:stage.id==='boundary'&&c.game.world.countries[targetId].identity?.isDynamic?Object.values(c.game.world.regions).find(r=>r.ownerCountryId===targetId&&r.simulationRole!=='administrative')?.id:undefined});return {immediate};}},
+    {id:'restrict',label:'강경 항의·제안 거절',preview:'관계 -4 · 신뢰 -1 · 위협이 6개월 상승합니다. 전쟁은 발생하지 않습니다.',effects:c=>{const targetId=diplomaticTarget(c,`diplomacy-${stage.id}`)!;const immediate:EventEffect[]=[{kind:'diplomacy',targetId,relations:-4,trust:-1,threatShockMonths:6}];if(stage.id==='boundary'||stage.id==='retaliation')immediate.push({kind:'casus_belli',targetId,type:stage.id==='boundary'?'border_incident':'sanctions_escalation',regionId:stage.id==='boundary'?sovereignTerritories(c.game.world,targetId)[0]:undefined});return {immediate};}},
   ],
 }));
 export function hasMigratoryPassage(c:EventContext):boolean {
