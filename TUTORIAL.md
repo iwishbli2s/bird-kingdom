@@ -201,3 +201,15 @@ PC·모바일에서 실제 화면과 기존 API로 48개월 완주했습니다. 
 `GameState.gameOverReason`, `player.career.lastElection`, `history.career`가 기존 종료·통치 기록 데이터입니다. [GameOver.tsx](src/components/GameOver.tsx)의 요약/역사/메인 메뉴와 [HistoryView.tsx](src/components/HistoryView.tsx)의 통치기록 탭이 다음 단계 UI 연결 지점입니다. 이번 단계에서 새 엔딩·등급·업적·점수는 만들지 않았습니다.
 
 실행은 `pnpm dev`, 검사와 빌드는 `pnpm test`·`pnpm build`입니다. 이전 600개월 비교는 `pnpm tutorial:regression`으로 재현합니다. 브라우저 E2E는 Chrome과 Playwright가 있는 환경에서 `node tests/tutorial-smoke.cjs`, `node tests/tutorial-production-smoke.cjs`로 실행합니다. `BIRD_PLAYWRIGHT_PATH`는 Playwright 모듈 위치, `BIRD_TEST_URL`은 실행 중인 개발/preview 주소, `BIRD_MOBILE=true`는 전체 모바일 완주입니다. 기본 검증 주소는 개발 5175·배포 5180입니다.
+
+## 47. 행동 대기기간 소프트락 수정
+
+`tutorialAvailability.ts`의 공통 selector는 실제 정책 일정과 외교 API의 차단 조건을 조회합니다. 필수 행동을 현재 실행할 수 없으면 튜토리얼이 월 진행을 차단하지 않습니다. 목표 완료나 cooldown 해제는 대신 수행하지 않으며, 지정 시나리오와 저장 상태도 유지합니다. 외교 안내는 실제 남은 개월 수를 보여주고, 대기가 끝나면 관계 개선 버튼의 강조와 원래 목표를 복원합니다. 필수 사건·참전 요청·외교 제안은 기존 게임 규칙대로 먼저 해결해야 합니다.
+
+세율의 3개월 일정과 예산의 12개월 일정에서도 같은 selector를 사용합니다. 연구는 별도 cooldown 없이 기존 API로 슬롯 중단·교체가 가능하므로 슬롯이 찼다는 이유만으로 대기 상태로 판단하지 않습니다. 새 연구 후보가 전혀 없으면 시간을 허용합니다. 긴급 예산 단계는 조건 읽기 단계이므로 사용할 수 없는 긴급 수정을 요구하지 않습니다. 다른 읽기 단계는 화면으로 이동하여 확인하거나 언제든 안내를 종료할 수 있습니다.
+
+정책 잠금으로 학습이 오래 지연되어 지정 월을 지나친 경우에는 해당 대기 단계에 도착한 뒤 실제 월 계산에서 청원과 폭풍을 한 번씩 제공합니다. 이전 사건이나 위기를 소급 계산하거나 일반게임의 시뮬레이션 규칙을 변경하지 않습니다.
+
+신규 회귀 16개는 실제 외교 대기 감소·정상 완료·목표 유지·저장/불러오기·중도 종료·일반게임 규칙·세율/예산 대기·연구 슬롯·긴급 예산·필수 사건·지연된 지정 사건을 검사합니다. `tests/tutorial-softlock-smoke.cjs`는 실제 Chrome에서 무역 협정 제안 → 저장/불러오기 → 다음 달 세 번 → 관계 개선 → 첫 선거까지 완주하며, 이후 저장 덮어쓰기와 중도 종료도 검사합니다. 실행 주소는 `BIRD_TEST_URL`로 지정합니다.
+
+최종 검증: 기존 1,358개와 신규 16개를 포함한 **1,374개 전체 통과(실패·취소·건너뜀 0)**, TypeScript 및 배포 빌드 통과, 위 브라우저 흐름과 튜토리얼 완주 통과. 결과는 `.test-output/tutorial-softlock-all-tests.txt`와 `.test-output/tutorial-softlock-browser-final.txt`에 보관했습니다.

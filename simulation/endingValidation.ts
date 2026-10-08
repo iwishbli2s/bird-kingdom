@@ -1,0 +1,15 @@
+import {writeFileSync,mkdirSync} from 'node:fs';
+import {createGame} from '../src/game/engine';
+import {evaluateAchievements} from '../src/game/achievements';
+import {federationWarFixture,stateDefeatWarFixture,unifiedFixture} from './endingFixtures';
+import {achievementDefinitions} from '../src/game/achievementConfig';
+import {calculateAchievementScore,ruleGrade} from '../src/game/endings';
+mkdirSync('.test-output',{recursive:true});
+const initial=createGame('sparrow',null,2030),election=createGame('sparrow',null,2030);
+election.turn=1200;election.date={year:2129,month:12};election.player.ageMonths=1211;election.player.career.electionsWon=20;election.player.career.monthsInCurrentTerm=47;election.achievements!.progress.lastMonthTurn=1200;
+const evaluatedElection=evaluateAchievements(election,election),unified=unifiedFixture();
+unified.achievements!.unlocked=unified.achievements!.unlocked.filter(u=>u.achievementId!=='world-unification');
+writeFileSync('.test-output/ending-fixtures.json',JSON.stringify({initial,election:evaluatedElection,hidden:federationWarFixture(),defeat:stateDefeatWarFixture(),unified}));
+const combinations={ordinary20:[],stable50:['reign-50','election-10','peace-50'],century:['reign-100','election-20','peace-100','economy-5','technology-5'],unifiedCentury:['world-unification','reign-100'],unifiedReverseCentury:['world-unification','reverse-federation','reign-100']};
+const results=Object.fromEntries(Object.entries(combinations).map(([name,ids])=>{const unlocked=ids.map(id=>({achievementId:id,score:achievementDefinitions.find(d=>d.id===id)!.score,unlockedAt:initial.date})),score=calculateAchievementScore(unlocked);return [name,{score,grade:ruleGrade(score),ids}];}));
+writeFileSync('.test-output/ending-calibration.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results));

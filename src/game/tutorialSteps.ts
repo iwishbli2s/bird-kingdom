@@ -19,7 +19,7 @@ export const tutorialSteps: TutorialStep[] = [
   {id:'event-wait',title:'첫 사건까지',menu:'overview',target:'.next-month',kind:'wait',month:6,text:'2030년 7월에 까마귀 행정 청원을 받습니다. ‘다음 안내까지 진행’도 매월 실제 계산을 실행하며 대응할 제안이 있으면 멈춥니다.'},
   {id:'event',title:'사건의 장단점',menu:'species',target:'.event-dialog',kind:'action',text:'사건창의 실제 선택지를 읽고 결정하세요. 모든 선택에는 장단점이 있으며 정답 표시는 없습니다. 선택 후 기록에서 결과를 확인할 수 있습니다.'},
   {id:'technology',title:'연구 시작',menu:'technology',target:'.research-slots',kind:'action',text:'최대 3개 연구 슬롯을 사용할 수 있습니다. 시작 연구가 세 슬롯을 쓰고 있으므로 하나를 ‘연구 중단’한 뒤 아래 다른 기술을 ‘우선 연구 지정’하세요. 중단해도 진척은 보존됩니다. 연구에는 여러 달이 필요하며 인프라 기술은 생산성·재난 대응·보급에도 연결됩니다.'},
-  {id:'diplomacy',title:'이웃과 관계 개선',menu:'diplomacy',target:'.diplomacy-view',kind:'action',text:'비둘기민주연방을 선택하고 ‘관계 개선’을 실행하세요. 관계는 태도, 신뢰는 합의 기반, 위협은 안보 부담, 무역은 교역 수준입니다. 관계 악화와 전쟁명분은 전쟁으로 이어질 수 있습니다.'},
+  {id:'diplomacy',title:'이웃과 관계 개선',menu:'diplomacy',target:'[data-diplomacy-action="improve"]',kind:'action',text:'비둘기민주연방을 선택하고 ‘관계 개선’을 실행하세요. 관계는 태도, 신뢰는 합의 기반, 위협은 안보 부담, 무역은 교역 수준입니다. 관계 악화와 전쟁명분은 전쟁으로 이어질 수 있습니다.'},
   {id:'crisis-wait',title:'위기 안내까지',menu:'overview',target:'.next-month',kind:'wait',month:24,text:'2032년 1월까지 운영을 이어갑니다. 연구와 정책 효과가 매월 반영되며 NPC 정부도 정상적으로 행동합니다.'},
   {id:'crisis',title:'폭풍과 회복',menu:'society',target:'.crisis-view',kind:'read',text:'중간 강도의 폭풍이 발생했습니다. 강도·영향·회복 진척·회복력을 확인하세요. 앞서 투자한 인프라와 기술은 위기 대응에도 도움이 됩니다.'},
   {id:'emergency',title:'긴급 예산의 조건',menu:'budget',target:'.budget-policy-panel',kind:'read',text:'예산 편성 탭에서 긴급 수정 조건을 확인하세요. 강도 75 이상 위기나 전쟁에서만 사용할 수 있습니다. 이번 중간 폭풍만으로는 열리지 않으며, 사용하면 6개월 대기와 새 12개월 잠금이 적용됩니다.'},

@@ -1,3 +1,4 @@
+import {evaluateAchievements} from './achievements';
 import {countries,regions} from './data';
 import {derivedCountryRuntime} from './runtime';
 import {technologyDefinition} from './technologyDefinitions';
@@ -63,7 +64,7 @@ export function collectHistory(previous:GameState,next:GameState,annual=false):G
  if(next.gameOverReason&&!career.endDate){career.endDate=copyDate(next.date);career.endReason=next.gameOverReason;if(career.officesHeld.at(-1))career.officesHeld.at(-1)!.endDate=copyDate(next.date);emit('career-end','politics','major','지도자의 통치 종료',[p.defeatedCountryId??p.controlledCountryId],next.date,{reason:next.gameOverReason});}
  if(!h.baseline)h.baseline=makeYearlySnapshot(g);
  if(annual&&next.date.month===1&&next.date.year>previous.date.year&&!h.yearlySnapshots.some(s=>s.year===next.date.year-1))h.yearlySnapshots=[...h.yearlySnapshots,makeYearlySnapshot(g,next.date.year-1)];
- return g;
+ return g.player.origin?evaluateAchievements(previous,g,annual):g;
 }
 
 

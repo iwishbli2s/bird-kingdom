@@ -1,3 +1,5 @@
+import {migrateAchievementState} from './achievements';
+import {validateAchievementFields} from './achievementValidation';
 import {validateDifficulty} from './difficulty';
 import {validateTutorial} from './tutorial';
 import { regionInfo } from './runtime';
@@ -54,6 +56,7 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
     arr(raw.events.activeEffects);
     obj(raw.events.cooldowns);
     obj(raw.player.career);
+    validateAchievementFields(raw as unknown as GameState);
     integer(raw.player.ageMonths);
     if (typeof raw.player.alive !== 'boolean')
         fail();
@@ -286,7 +289,7 @@ export function migrateSaveData(raw: unknown): SaveGameData { obj(raw); integer(
         fail();
 } if (current.metadata.countryCount !== Object.keys(current.game.world.countries).length || current.metadata.playStatus !== (current.game.gameOverReason ? 'game_over' : 'active') || current.metadata.gameOverReason !== (current.game.gameOverReason ?? undefined))
     fail(); if (current.metadata.turn !== current.game.turn || current.metadata.gameDate.year !== current.game.date.year || current.metadata.gameDate.month !== current.game.date.month)
-    fail(); assertJsonSafe(current); return JSON.parse(JSON.stringify(current)) as SaveGameData; }
+    fail(); assertJsonSafe(current); const normalized=JSON.parse(JSON.stringify(current)) as SaveGameData; normalized.game=migrateAchievementState(normalized.game); validateAchievementFields(normalized.game); return normalized; }
 export function createSaveData(game: GameState, saveId: string, name?: string, previous?: SaveGameData, now = new Date().toISOString()): SaveGameData { validateGameState(game); const country = historicalCountryName(game, game.player.defeatedCountryId ?? game.player.controlledCountryId), data: SaveGameData = { saveVersion: saveConfig.version, createdAt: previous?.createdAt ?? now, updatedAt: now, metadata: { saveId, name: name?.trim().slice(0, 140) || `${country} — ${game.date.year}년 ${game.date.month}월`, gameDate: { ...game.date }, playerCountryName: country, ...(game.player.controlledRegionId ? { playerRegionName: regionInfo(game, game.player.controlledRegionId)?.name ?? game.player.controlledRegionId } : {}), playerOffice: game.player.career.office, turn: game.turn, playStatus: game.gameOverReason ? 'game_over' : 'active', ...(game.gameOverReason ? { gameOverReason: game.gameOverReason } : {}), countryCount: Object.keys(game.world.countries).length }, game }; return migrateSaveData(data); }
 export function serializeSave(data: SaveGameData): string { return JSON.stringify(migrateSaveData(data)); }
 export function deserializeSave(text: string): SaveGameData { try {

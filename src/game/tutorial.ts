@@ -3,6 +3,7 @@ import type { TutorialState } from './tutorialTypes';
 import { tutorialSteps } from './tutorialSteps';
 import { startCrisis } from './crisis';
 import { selectControlledRuntime } from './world';
+import {canTutorialBlockTimeAdvance} from './tutorialAvailability';
 
 export const tutorialStep = (game:GameState) => game.tutorial?.mode==='active' ? tutorialSteps.find(s=>s.id===game.tutorial?.stepId) : undefined;
 export const tutorialElapsed = (game:GameState) => game.turn-(game.tutorial?.startedTurn??game.turn);
@@ -31,7 +32,7 @@ export function observeTutorialAction(before:GameState,after:GameState):GameStat
 }
 export function tutorialAdvanceBlock(game:GameState):string|null {
   const step=tutorialStep(game);
-  return step&&step.kind!=='wait'&&step.id!=='month'?'현재 안내의 화면 확인 또는 실제 행동을 마치세요. 안내는 언제든 종료할 수 있습니다.':null;
+  return step&&canTutorialBlockTimeAdvance(game,step)?'현재 안내의 화면 확인 또는 실제 행동을 마치세요. 안내는 언제든 종료할 수 있습니다.':null;
 }
 /** No random draws. Fixed milestones route through the existing event/crisis systems. */
 export function scheduleTutorial(game:GameState):GameState {
@@ -42,10 +43,10 @@ export function scheduleTutorial(game:GameState):GameState {
   let next=game;const elapsed=tutorialElapsed(game),step=tutorialStep(game);
   if(step?.id==='month'&&elapsed>=1)next=nextStep(next);
   if(step?.kind==='wait'&&elapsed>=(step.month??Infinity)&&step.id!=='election')next=nextStep(next);
-  if(elapsed===6&&!t.firedScriptIds.includes('petition')){
+  if(elapsed>=6&&step?.id==='event-wait'&&!t.firedScriptIds.includes('petition')){
     next={...next,tutorial:{...next.tutorial!,firedScriptIds:[...next.tutorial!.firedScriptIds,'petition']},events:{...next.events,pendingEvent:{id:'tutorial:petition',eventId:'crow-petition',date:{...next.date},turn:next.turn,jurisdiction:{kind:'country',id:'sparrow'},jurisdictionName:'참새자유공화국',severity:1}}};
   }
-  if(elapsed===24&&!t.firedScriptIds.includes('storm')){
+  if(elapsed>=24&&step?.id==='crisis-wait'&&!t.firedScriptIds.includes('storm')){
     next=startCrisis(next,{kind:'country',id:'sparrow'},'great_storm',60,'tutorial:storm',.2);
     next={...next,tutorial:{...next.tutorial!,firedScriptIds:[...next.tutorial!.firedScriptIds,'storm']}};
   }

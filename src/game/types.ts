@@ -94,6 +94,7 @@ export interface PoliticalCareerState {
   electionsWon: number; electionsLost: number; history: MonthlyElectionMetrics[]; lastElection: ElectionResult | null;
 }
 export interface PlayerState {
+  origin?:import('./achievementTypes').PlayerOrigin;
   leaderRisk?:LeaderRiskState;
   temporaryLeaderRiskModifiers?:TemporaryLeaderRiskModifier[];
   defeatedCountryId?: CountryId;
@@ -197,6 +198,8 @@ export interface WorldState {
   regions: Record<RegionId, RegionRuntimeState>;
 }
 export interface GameState {
+  achievements?:import('./achievementTypes').AchievementState;
+  endingResult?:import('./achievementTypes').EndingResult;
   tutorial?:import('./tutorialTypes').TutorialState;
   difficulty?:Difficulty;
   random?:GameRandomState;

@@ -13,6 +13,7 @@ export interface WarParticipantState {countryId:CountryId; side:'attacker'|'defe
 export interface WarFrontState {regionId:RegionId; originalOwnerCountryId:CountryId; controllerCountryId:CountryId; control:number; decisiveMonths:number}
 export type WarResolution='status_quo'|'territory_transfer'|'recognition'|'abandon_reunification'|'reparations'|'defense_success';
 export interface InterstateWarState {
+  capabilityAtStart?:Record<string,number>;
   id:string; attackers:CountryId[]; defenders:CountryId[]; primaryAttacker:CountryId; primaryDefender:CountryId;
   countryNames:Record<string,string>; status:'active'|'ceasefire'|'peace_negotiation'|'resolved'; warGoal:WarGoal;
   startedDate:GameDate; resolvedDate:GameDate|null; fronts:WarFrontState[]; participants:Record<string,WarParticipantState>;
