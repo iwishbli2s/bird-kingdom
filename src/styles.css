@@ -115,3 +115,20 @@
 .ending-alignment{display:inline-block;letter-spacing:.18em;font-size:14px;font-weight:700;padding:10px 18px;border:1px solid #39454d;border-radius:6px}.ending-alignment.good{color:#84d4b6}.ending-alignment.bad{color:#df9b91}.achievement-score{display:flex;flex-wrap:wrap;gap:24px;align-items:center;text-align:left;margin:24px 0}.achievement-score div{display:grid;gap:8px;min-width:130px}.achievement-score strong{font-size:38px;color:#d8ba78}.achievement-score p{flex-basis:100%;margin:0}.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;text-align:left}.achievement-card{min-width:0}.achievement-card h3{font-size:17px}.achievement-card p{font-size:13px;line-height:1.7}.achievement-card footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12px;color:#8b9caa}.achievement-card.unlocked{border-color:#647656}.achievement-notice{padding:12px 16px;border-left:3px solid #d8ba78;background:#1d2931;color:#e5ce9b}.game-over-content .achievements-view{width:100%}@media(max-width:650px){.achievement-grid{grid-template-columns:1fr}.achievement-score{gap:16px}.achievement-score strong{font-size:32px}}
 
 .game-over-content > p{word-break:keep-all;line-height:1.65}.ending-save{margin:16px 0;width:100%}.ending-save button{width:100%;justify-content:center}
+:root{--turn-control-gap:12px}
+.game-shell .topbar{position:sticky;top:0;z-index:30;flex-wrap:wrap;row-gap:10px}
+.topbar-country{min-width:0}
+.topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:var(--turn-control-gap);margin-left:auto;flex-shrink:0}
+.topbar .next-month{width:auto;min-width:124px;min-height:44px;padding:11px 17px;font-size:12px;white-space:nowrap;flex-shrink:0}
+.topbar .advance-reason{flex-basis:100%;max-width:none;margin:0;text-align:right;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.game-shell .tutorial-highlight{scroll-margin-top:calc(var(--topbar-height,76px) + 24px)}
+@media(max-width:640px){
+  .game-shell .topbar{padding:12px 16px;gap:10px;min-height:112px}
+  .topbar-country{width:100%;overflow:hidden}
+  .topbar-country strong,.topbar-country .region-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .topbar-actions{width:100%;justify-content:space-between;margin:0}
+  .topbar-actions .topbar-date{margin:0}
+  .topbar .next-month{min-width:112px;min-height:44px;padding:10px 14px}
+  .topbar .advance-reason{font-size:11px!important;max-width:none;text-align:left}
+  .game-shell .sidebar{top:var(--topbar-height,112px);max-height:calc(100dvh - var(--topbar-height,112px))}
+}
