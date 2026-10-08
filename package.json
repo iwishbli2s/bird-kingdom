@@ -8,7 +8,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "tsx --test tests/game.test.ts tests/world.test.ts tests/mortality.test.ts tests/economy.test.ts tests/fiscal.test.ts tests/budget.test.ts tests/population.test.ts tests/speciesPolitics.test.ts tests/social.test.ts tests/governance.test.ts tests/election.test.ts tests/events.test.ts tests/secession.test.ts tests/conflict.test.ts tests/diplomacy.test.ts tests/warfare.test.ts tests/technology.test.ts tests/crises.test.ts tests/ai.test.ts tests/strategicAI.test.ts tests/history.test.ts tests/saveLoad.test.ts tests/difficulty.test.ts tests/convergence.test.ts tests/tutorial.test.ts tests/achievements.test.ts tests/sovereignty.test.ts",
+    "test": "tsx --test tests/game.test.ts tests/world.test.ts tests/mortality.test.ts tests/economy.test.ts tests/fiscal.test.ts tests/budget.test.ts tests/population.test.ts tests/speciesPolitics.test.ts tests/social.test.ts tests/governance.test.ts tests/election.test.ts tests/events.test.ts tests/secession.test.ts tests/conflict.test.ts tests/diplomacy.test.ts tests/warfare.test.ts tests/technology.test.ts tests/crises.test.ts tests/ai.test.ts tests/strategicAI.test.ts tests/history.test.ts tests/saveLoad.test.ts tests/difficulty.test.ts tests/convergence.test.ts tests/tutorial.test.ts tests/achievements.test.ts tests/sovereignty.test.ts tests/timeDisplay.test.ts",
     "balance:convergence": "tsx simulation/convergenceRun.ts",
     "tutorial:regression": "tsx simulation/tutorialRegression.ts",
     "sovereignty:regression": "tsx simulation/sovereigntyRun.ts"
