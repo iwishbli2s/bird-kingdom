@@ -4,7 +4,7 @@ import { governmentForJurisdiction } from './government';
 import { calculateCrisisResilience } from './crisis';
 import { crisisAidPartner } from './crisisEvents';
 import type { AIDecisionScore, EventContext, EventEffect, EventSeverity, GameEventDefinition } from './types';
-const strategic=new Set(['movement','conflict','war','casus_belli','diplomacy']);
+const strategic=new Set(['state_politics','movement','conflict','war','casus_belli','diplomacy']);
 export function isDomesticAIEvent(c:EventContext,e:GameEventDefinition,severity:EventSeverity):boolean {
  if(e.id.startsWith('secession-')||e.conflictEvent||e.warEvent||e.diplomacyEvent)return false;
  const aid=['international-rescue','international-grain'].includes(e.id);

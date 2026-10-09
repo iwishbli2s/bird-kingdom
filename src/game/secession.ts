@@ -59,7 +59,12 @@ function applySecessionActionCore(game:GameState,j:Jurisdiction,id:SpeciesId,act
   let r=movementRuntime(game,j);const old=r.secession?.[id];if(!old)throw new Error('분리주의 운동 상태가 없습니다.');
   let m:SecessionMovementState={...old};const phase=(value:SecessionPhase)=>{m={...m,phase:value,monthsInPhase:0};};
   const p=r.speciesPolitics[id]!;
-  if(action==='organize'){if(!canOrganize(r,id))throw new Error('자치운동 시작 조건 미충족');phase('organizing');}
+  const governorInitiative=action==='governor_request'||action==='governor_declare';
+  if(governorInitiative&&(j.kind!=='region'||game.world.regions[j.id]?.ownerCountryId!=='pigeon'||game.world.regions[j.id].simulationRole==='administrative'||game.events.pendingEvent||game.gameOverReason||!game.player.alive))throw new Error('연방 소속 주정부의 직접 정치행동이 필요합니다.');
+  if(governorInitiative&&game.turn<(game.world.federalPolitics?.[j.id]?.nextActionTurn??0))throw new Error('연방정치 행동 재사용 대기 중입니다.');
+  if(action==='governor_request'){if(['referendum_scheduled','transition','completed'].includes(m.phase))throw new Error('이미 독립 절차가 진행 중입니다.');phase('referendum_campaign');}
+  else if(action==='governor_declare'){phase('unilateral_crisis');}
+  else if(action==='organize'){if(!canOrganize(r,id))throw new Error('자치운동 시작 조건 미충족');phase('organizing');}
   else if(action==='charter'){if(m.phase!=='organizing'||m.monthsInPhase<config.charterMonths)throw new Error('헌장 제출 최소 기간 미충족');phase('autonomy_campaign');}
   else if(action==='request'){if(!canRequestReferendum(r,id))throw new Error('주민투표 운동 최소 조건 미충족');phase('referendum_campaign');}
   else if(action==='expand'||action==='concede'){
@@ -96,7 +101,7 @@ function applySecessionActionCore(game:GameState,j:Jurisdiction,id:SpeciesId,act
     if(m.phase!=='completed')throw new Error('독립을 먼저 완료해야 합니다.');
   }
   const next=store(game,j,{...r,secession:{...r.secession,[id]:m}});
-  return action==='found'||action==='declare'?createBreakawayCountry(next,j,id,action==='declare'):next;
+  return action==='governor_declare'?synchronizePolicySchedules(next,collectHistory(next,createBreakawayCountryCore(next,j,id,true,true))):action==='found'||action==='declare'?createBreakawayCountry(next,j,id,action==='declare'):next;
 }
 function splitPopulation(population:PopulationState,ratios:Partial<Record<SpeciesId,number>>):[PopulationState,PopulationState] {
   const parent=structuredClone(population),child=structuredClone(population);
@@ -109,10 +114,11 @@ function splitPopulation(population:PopulationState,ratios:Partial<Record<Specie
   return [parent,child];
 }
 /** 공개 생성 API도 정치 절차와 최소 기간을 검증합니다. */
-function createBreakawayCountryCore(game:GameState,j:Jurisdiction,speciesId:SpeciesId,disputed=false):GameState {
+function createBreakawayCountryCore(game:GameState,j:Jurisdiction,speciesId:SpeciesId,disputed=false,governorInitiative=false):GameState {
   if(game.gameOverReason||!game.player.alive)throw new Error('종료 후에는 국가를 생성할 수 없습니다.');
   const source=movementRuntime(game,j),movement=source.secession?.[speciesId];
-  if(!movement||(disputed?movement.phase!=='unilateral_crisis'||!canDeclareUnilaterally(game,source,speciesId):movement.phase!=='transition'||!movement.lastReferendumResult?.passed||movement.monthsInPhase<config.transitionMonths))throw new Error('독립 정치 절차가 완료되지 않았습니다.');
+  if(!movement||(disputed?movement.phase!=='unilateral_crisis'||(!governorInitiative&&!canDeclareUnilaterally(game,source,speciesId)):movement.phase!=='transition'||!movement.lastReferendumResult?.passed||movement.monthsInPhase<config.transitionMonths))throw new Error('독립 정치 절차가 완료되지 않았습니다.');
+  if(governorInitiative&&(j.kind!=='region'||game.world.regions[j.id].ownerCountryId!=='pigeon'))throw new Error('연방 주정부가 아닙니다.');
   const parentCountryId=j.kind==='region'?game.world.regions[j.id].ownerCountryId:j.id;
   let suffix=1;while(game.world.countries[`${speciesId}-republic-${suffix}`]||game.history?.countries[`${speciesId}-republic-${suffix}`]||game.world.retiredCountryIdentities?.[`${speciesId}-republic-${suffix}`]||(j.kind==='country'&&game.world.regions[`${speciesId}-nest-${suffix}`]))suffix++;
   const countryId=`${speciesId}-republic-${suffix}`,base=nationNames[speciesId],name=Object.values(game.world.countries).some(c=>c.identity?.name===base)?`${base} ${suffix}`:base;
@@ -157,7 +163,7 @@ function createBreakawayCountryCore(game:GameState,j:Jurisdiction,speciesId:Spec
   return appendGameLog(recordCrisisTerritoryChange(game,withConflict),{category:'political',type:'event',message:`${name} 수립 · ${disputed?'일방 독립, 영토 분쟁 지속':'주민투표와 이행 절차에 따른 독립'}`});
 }
 
-export function createBreakawayCountry(...args:Parameters<typeof createBreakawayCountryCore>):GameState { return synchronizePolicySchedules(args[0],collectHistory(args[0],createBreakawayCountryCore(...args))); }
+export function createBreakawayCountry(...args:[GameState,Jurisdiction,SpeciesId,boolean?]):GameState { return synchronizePolicySchedules(args[0],collectHistory(args[0],createBreakawayCountryCore(...args))); }
 
 export function applySecessionAction(...args:Parameters<typeof applySecessionActionCore>):GameState { return withGameRandom(args[0],(g,r)=>collectHistory(g,applySecessionActionCore(g,args[1],args[2],args[3],args[4]??r('secession')))); }
 

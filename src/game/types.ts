@@ -186,7 +186,11 @@ export interface RegionRuntimeState {
   social: SocialState;
   speciesPolitics: SpeciesPoliticsState;
 }
+export type * from './federalPoliticsTypes';
+export type * from './stateRelationsTypes';
 export interface WorldState {
+  statePolitics?:import('./stateRelationsTypes').FederalStatePolitics;
+  federalPolitics?:Record<string,import('./federalPoliticsTypes').FederalPoliticalState>;
   governmentAI?:Record<string,GovernmentAIState>;
   strategicAI?:Record<string,StrategicAIState>;
   foreignProposals?:ForeignProposal[];

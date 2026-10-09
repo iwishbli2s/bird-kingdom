@@ -1,3 +1,5 @@
+import {assessConflictPressure,conflictFamily,getConflictEventFamilyMultiplier} from './conflictPressure';
+import {pressureEventDefinitions,statePairTarget} from './pressureEvents';
 import {withGameRandom} from './randomState';
 import { collectHistory } from './history';
 import { scorePeace } from './strategicEvaluation';
@@ -23,7 +25,7 @@ import { appendGameLog } from './logs';
 import { createRandomSeed, createSeededRandom } from './random';
 import type { EventContext, EventState, GameEventDefinition, Jurisdiction, PendingEvent } from './eventTypes';
 import type { GameState } from './types';
-export const allEventDefinitions=[...eventDefinitions,...secessionEventDefinitions,...conflictEventDefinitions,...diplomacyEventDefinitions,...warEventDefinitions,...technologyEventDefinitions,...crisisEventDefinitions];
+export const allEventDefinitions=[...pressureEventDefinitions,...eventDefinitions,...secessionEventDefinitions,...conflictEventDefinitions,...diplomacyEventDefinitions,...warEventDefinitions,...technologyEventDefinitions,...crisisEventDefinitions];
 export const createEventState=():EventState=>({pendingEvent:null,cooldowns:{},activeEffects:[],history:[]});
 export const getEventDefinition=(id:string)=>{const definition=id==='technology-discovery'?technologyDiscoveryDefinition:allEventDefinitions.find(e=>e.id===id);if(!definition)throw new Error('존재하지 않는 사건입니다.');return definition;};
 export function eventContext(game:GameState,jurisdiction:Jurisdiction,conflictId?:string,diplomaticTargetId?:string,warId?:string,crisisId?:string):EventContext {
@@ -31,11 +33,12 @@ export function eventContext(game:GameState,jurisdiction:Jurisdiction,conflictId
   if(!r?.social||!r.governance||!r.speciesPolitics)throw new Error('사건을 직접 처리할 수 없는 지역입니다.');
   return {game,jurisdiction,crisisId,conflictId,diplomaticTargetId,warId,runtime:{...r,social:r.social,governance:r.governance,speciesPolitics:r.speciesPolitics}};
 }
-export function calculateEventChance(id:string,game:GameState,j:Jurisdiction):number {
-  const e=getEventDefinition(id),c=eventContext(game,j);
+export function calculateEventChance(id:string,game:GameState,j:Jurisdiction,pressure?:import("./conflictPressure").ConflictPressureAssessment):number {
+  const e=getEventDefinition(id),c=eventContext(game,j);c.conflictPressure=pressure;
   if((!e.priority&&(game.events.cooldowns[cooldownKey(j,id)]??0)>0)||!Object.keys(c.runtime.population.species).length||!e.eligible(c))return 0;
-  const chance=e.calculateChance(c)*(legacyCrisisEvents[id]?1-calculateCrisisResilience(c.runtime).emergencyResponse/500:1);
-  return Number.isFinite(chance)?Math.min(e.priority?1:eventConfig.maxIndividualChance,Math.max(0,chance)):0;
+  const family=conflictFamily(e);
+  const chance=e.calculateChance(c)*(family&&!e.priority?getConflictEventFamilyMultiplier(game,j,family,pressure):1)*(legacyCrisisEvents[id]?1-calculateCrisisResilience(c.runtime).emergencyResponse/500:1);
+  return Number.isFinite(chance)?e.priority?Math.min(1,Math.max(0,chance)):family?eventConfig.maxIndividualChance*(-Math.expm1(-Math.max(0,chance)/eventConfig.maxIndividualChance)):Math.min(eventConfig.maxIndividualChance,Math.max(0,chance)):0;
 }
 function sample(random:()=>number):number{const n=random();if(!Number.isFinite(n)||n<0||n>=1)throw new RangeError('사건 난수는0 이상1 미만이어야 합니다.');return n;}
 export function chooseWeightedEvent(candidates:readonly {definition:GameEventDefinition;chance:number}[],random:()=>number):GameEventDefinition|null {
@@ -63,6 +66,7 @@ function resolve(game:GameState,pending:PendingEvent,choiceId:string,playerChoic
   const e=getEventDefinition(pending.eventId),choice=e.choices.find(choice=>choice.id===choiceId);
   if(!choice)throw new Error('유효하지 않은 사건 선택입니다.');
   const context=eventContext(game,pending.jurisdiction,pending.conflictId,pending.diplomaticTargetId,pending.warId,pending.crisisId),choiceLabel=choice.labelFor?.(context)??choice.label;
+  context.statePairTarget=pending.statePairTarget;
   context.strategicAIEnabled=strategic;
   let plan=choice.effects(context,pending.severity,sample(outcomeRandom));
   if(['migrant-refuge','nest-overcrowding','flight-corridor'].includes(e.id)&&hasMigratoryPassage(context)){
@@ -105,17 +109,18 @@ export function generateWorldEvents(game:GameState,options:EventOptions={}):Game
   // 발생 후보와 강도는 같은 월말 스냅샷에서 결정합니다. NPC 처리 순서가 확률에 영향을 주지 않습니다.
   const proposals=jurisdictions.flatMap(j=>{
     if(game.tutorial?.mode==='active'&&game.tutorial.scriptedScenarioEnabled&&jurisdictionKey(j)===jurisdictionKey(player))return [];
-    const candidates=allEventDefinitions.map(definition=>({definition,chance:calculateEventChance(definition.id,game,j)}));
+    const pressure=assessConflictPressure(game,j);
+    const candidates=allEventDefinitions.map(definition=>({definition,chance:calculateEventChance(definition.id,game,j,pressure)}));
     const chosen=candidates.filter(e=>e.definition.priority&&e.chance>0).sort((a,b)=>a.definition.id.localeCompare(b.definition.id))[0]?.definition??chooseWeightedEvent(candidates,occurrence);
     if(!chosen)return [];
-    return [{id:`${game.turn}:${jurisdictionKey(j)}:${chosen.id}`,eventId:chosen.id,jurisdictionName:jurisdictionName(game,j),date:{...game.date},turn:game.turn,jurisdiction:j,severity:chosen.severity(eventContext(game,j)),...(chosen.crisisEvent?{crisisId:crisesFor(game.world,j).sort((a,b)=>b.severity-a.severity||a.id.localeCompare(b.id)).find(x=>chosen.eligible(eventContext(game,j,undefined,undefined,undefined,x.id)))?.id}:{}),...(chosen.diplomacyEvent?{diplomaticTargetId:diplomaticTarget(eventContext(game,j),chosen.id)}:{}),...(chosen.warEvent?{warId:contextWar(eventContext(game,j))!.id}:{}),...(chosen.conflictEvent?{conflictId:contextConflict(eventContext(game,j))!.id}:{})}];
+    return [{id:`${game.turn}:${jurisdictionKey(j)}:${chosen.id}`,eventId:chosen.id,jurisdictionName:jurisdictionName(game,j),date:{...game.date},turn:game.turn,jurisdiction:j,severity:chosen.severity(eventContext(game,j)),...(chosen.statePairEvent?{statePairTarget:statePairTarget(eventContext(game,j))}:{}),...(chosen.crisisEvent?{crisisId:crisesFor(game.world,j).sort((a,b)=>b.severity-a.severity||a.id.localeCompare(b.id)).find(x=>chosen.eligible(eventContext(game,j,undefined,undefined,undefined,x.id)))?.id}:{}),...(chosen.diplomacyEvent?{diplomaticTargetId:diplomaticTarget(eventContext(game,j),chosen.id)}:{}),...(chosen.warEvent?{warId:contextWar(eventContext(game,j))!.id}:{}),...(chosen.conflictEvent?{conflictId:contextConflict(eventContext(game,j))!.id}:{})}];
   });
   const seen=new Set<string>();
   const unique=proposals.slice().sort((a,b)=>Number(jurisdictionKey(b.jurisdiction)===jurisdictionKey(player))-Number(jurisdictionKey(a.jurisdiction)===jurisdictionKey(player))).filter(p=>{const id=p.warId??p.conflictId;if(!id)return true;if(seen.has(id))return false;seen.add(id);return true;});
   let next=game;
-  const stillValid=(state:GameState,p:PendingEvent)=>!!(p.jurisdiction.kind==='country'?state.world.countries[p.jurisdiction.id]:state.world.regions[p.jurisdiction.id]?.simulationRole!=='administrative'&&state.world.regions[p.jurisdiction.id])&&(!p.crisisId||!!state.world.crises?.activeCrises[p.crisisId])&&(!p.diplomaticTargetId||!!state.world.countries[p.diplomaticTargetId])&&(!p.conflictId||state.world.internalConflicts?.[p.conflictId]?.status!=='resolved')&&(!p.warId||state.world.warfare?.wars[p.warId]?.status!=='resolved');
+  const stillValid=(state:GameState,p:PendingEvent)=>(!p.statePairTarget||[p.statePairTarget.actorStateId,p.statePairTarget.targetStateId].every(id=>state.world.regions[id]?.ownerCountryId==='pigeon'&&state.world.regions[id].simulationRole!=='administrative'))&&!!(p.jurisdiction.kind==='country'?state.world.countries[p.jurisdiction.id]:state.world.regions[p.jurisdiction.id]?.simulationRole!=='administrative'&&state.world.regions[p.jurisdiction.id])&&(!p.crisisId||!!state.world.crises?.activeCrises[p.crisisId])&&(!p.diplomaticTargetId||!!state.world.countries[p.diplomaticTargetId])&&(!p.conflictId||state.world.internalConflicts?.[p.conflictId]?.status!=='resolved')&&(!p.warId||state.world.warfare?.wars[p.warId]?.status!=='resolved');
   for(const pending of unique.filter(p=>jurisdictionKey(p.jurisdiction)!==jurisdictionKey(player)))if(!next.gameOverReason&&stillValid(next,pending)){
-    const definition=getEventDefinition(pending.eventId),context=eventContext(game,pending.jurisdiction,pending.conflictId,pending.diplomaticTargetId,pending.warId,pending.crisisId);
+    const definition=getEventDefinition(pending.eventId),context=eventContext(game,pending.jurisdiction,pending.conflictId,pending.diplomaticTargetId,pending.warId,pending.crisisId);context.statePairTarget=pending.statePairTarget;
     const actor=pending.jurisdiction.kind==='country'?pending.jurisdiction.id:next.world.regions[pending.jurisdiction.id].ownerCountryId;
     if(options.strategicAI!==false&&definition.diplomacyEvent&&(actor===game.player.controlledCountryId&&!options.autonomousWorld||next.world.strategicAI?.[actor]?.lastMajorActionTurn===game.turn))continue;
     context.strategicAIEnabled=options.strategicAI!==false;

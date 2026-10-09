@@ -11,7 +11,7 @@ export interface SecessionMovementState {
   createdCountryId: CountryId | null;
 }
 export type SecessionState = Partial<Record<SpeciesId, SecessionMovementState>>;
-export type SecessionAction = 'organize' | 'charter' | 'expand' | 'concede' | 'refuse' | 'request' | 'approve' | 'withdraw' | 'vote' | 'agreement' | 'found' | 'declare' | 'celebrate';
+export type SecessionAction = 'governor_request' | 'governor_declare' | 'organize' | 'charter' | 'expand' | 'concede' | 'refuse' | 'request' | 'approve' | 'withdraw' | 'vote' | 'agreement' | 'found' | 'declare' | 'celebrate';
 export interface CountryRuntimeIdentity {
   id: CountryId; name: string; governmentLabel: string; primarySpeciesId: SpeciesId;
   foundedDate: GameDate; originCountryId: CountryId | null;

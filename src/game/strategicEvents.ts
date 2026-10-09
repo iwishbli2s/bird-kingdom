@@ -1,7 +1,13 @@
+import {getStateRelation} from './stateRelations';
+import {statePairTarget} from './pressureEvents';
+import {conflictFamily,conflictOpportunity} from './conflictPressure';
 import { scoreMovementAction, conflictActionScore } from './strategicParent';
 import { scoreDiplomaticAction, scorePeace, warStrategy } from './strategicEvaluation';
 import type { EventContext, EventSeverity, GameEventDefinition } from './types';
 export function chooseStrategicEvent(c:EventContext,e:GameEventDefinition,severity:EventSeverity):{choiceId:string;scored:boolean} {
+ const ownerForPressure=c.jurisdiction.kind==='country'?c.jurisdiction.id:c.game.world.regions[c.jurisdiction.id].ownerCountryId;
+ if(conflictFamily(e)==='casus_belli'&&conflictOpportunity(c).diplomaticProvocationUtility>=70&&c.game.world.strategicAI?.[ownerForPressure]?.foreignPolicy==='assertive')return {choiceId:'restrict',scored:true};
+ if(e.conflictFamily&&['autonomy-protest','separatist-protest','federal-grievance','domestic-unrest','state-dispute'].includes(e.id)){const pair=statePairTarget(c);if(e.id==='state-dispute'&&pair){const r=getStateRelation(c.game,pair.actorStateId,pair.targetStateId);return {choiceId:r.rivalry>65&&c.runtime.governance.approval>55?'restrict':r.rivalry>35||r.relations<55?'balance':'invest',scored:true};}const u=conflictOpportunity(c),hard=c.runtime.governance.approval>55&&c.runtime.governance.stability>45&&u.escalationOpportunity>55,poor=c.runtime.fiscal.treasury<c.runtime.economy.gdp*.005;return {choiceId:hard?'restrict':poor?'balance':'invest',scored:true};}
  if(!e.id.startsWith('secession-')&&!e.conflictEvent&&!e.warEvent&&!e.diplomacyEvent)return {choiceId:e.nonPlayerChoiceId,scored:false};
  const owner=c.jurisdiction.kind==='country'?c.jurisdiction.id:c.game.world.regions[c.jurisdiction.id].ownerCountryId;
  try{const choices=e.choices.map((ch,i)=>{let score=0;const plan=ch.effects({...c,strategicAIEnabled:true},severity,.5);for(const x of plan.immediate){

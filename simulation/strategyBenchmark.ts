@@ -1,0 +1,2 @@
+import {runSimulation} from './harness';import {writeFileSync} from 'node:fs';
+const results=[];for(const source of ['.test-output/strategy-4-baseline','src','.test-output/strategy-4-baseline']){const start=Date.now(),result=await runSimulation(1001,2400,source,'normal','normal','ai');results.push({source,elapsedMs:Date.now()-start,gdpRatio:result.gdpRatio,wars:result.wars});console.log('BENCHMARK',results.at(-1));}writeFileSync('.test-output/strategy-benchmark.json',JSON.stringify(results,null,2));

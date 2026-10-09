@@ -154,3 +154,37 @@
 /* Save feedback must not cover the always-accessible time controls. */
 .save-status{top:auto;bottom:148px;max-width:calc(100vw - 40px);overflow-wrap:anywhere}
 @media(max-width:640px){.save-status{top:auto;bottom:142px}}
+.invasion-warning{color:#dbc09c;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.war-declaration .diplomatic-action>div{min-width:0}
+@media(max-width:640px){.war-declaration .diplomatic-action{flex-wrap:wrap}.war-declaration .diplomatic-action>div{width:100%}.war-declaration .diplomatic-action button{margin-left:auto}}
+
+.war-confirm-backdrop{z-index:1100}
+.federal-politics { margin: 20px 0; padding: 24px; }
+.federal-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+.federal-stats dt { color: var(--text-muted); font-size: 12px; }
+.federal-stats dd { margin: 8px 0; font-size: 22px; font-weight: 650; }
+.federal-demand { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0; }
+.federal-demand select { background: #18232b; color: #e7edef; border: 1px solid #35454c; border-radius: 6px; padding: 9px; }
+.federal-action-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.federal-action-grid article { padding: 16px; border: 1px solid #2d3b43; border-radius: 8px; min-width: 0; }
+.federal-action-grid h3 { font-size: 15px; margin: 0; }
+.federal-action-grid p,.federal-history { font-size: 13px; line-height: 1.8; }
+.federal-action-grid button { width: 100%; white-space: normal; }
+.federal-action-grid small { display: block; margin-top: 8px; }
+.federal-confirm { margin: 18px 0; border: 1px solid #b17156; padding: 18px; border-radius: 8px; }
+.federal-confirm button { margin: 5px; }
+.federal-history { padding-left: 18px; overflow-wrap: anywhere; }
+@media(max-width:900px) { .federal-action-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .federal-politics { padding: 16px; } .federal-stats { grid-template-columns: repeat(2,minmax(0,1fr)); } .federal-action-grid { grid-template-columns: 1fr; } }
+.state-relations { padding: 24px; margin: 20px 0; }
+.state-pair-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 18px 0; }
+.state-pair-grid article,.state-bloc { padding: 14px; border: 1px solid #2d3b43; border-radius: 8px; min-width: 0; }
+.state-pair-grid h3 { font-size: 14px; margin: 0 0 12px; }
+.state-pair-grid dl { display: flex; gap: 22px; margin: 0; }
+.state-pair-grid dt,.state-pair-grid p { font-size: 12px; color: #94a6ae; }
+.state-pair-grid dd { margin: 4px 0; font-size: 18px; }
+.state-action-settings { display: flex; flex-wrap: wrap; gap: 16px; margin: 20px 0; }
+.state-action-settings label { display: grid; gap: 7px; }
+.state-action-settings select { background: #18232b; color: #e7edef; border: 1px solid #35454c; border-radius: 6px; padding: 9px; max-width: 100%; }
+@media(max-width:900px) { .state-pair-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .state-relations { padding: 16px; } .state-pair-grid { grid-template-columns: 1fr; } .state-action-settings { display: grid; } }

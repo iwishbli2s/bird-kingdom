@@ -1,3 +1,5 @@
+import {updateStateRelations,updateStatePoliticalAI} from './stateRelations';
+import {updateNPCFederalStrategy} from './federalStrategy';
 import {createPlayerOrigin,emptyAchievementState,withAchievementMonth} from './achievements';
 import {initialEconomyProfiles} from './economyConfig';
 import {scheduleTutorial,tutorialAdvanceBlock} from './tutorial';
@@ -49,7 +51,7 @@ function createGameCore(countryId: StartingCountryId, regionId: RegionId | null 
   }
   const risk = calculateBaseMonthlyMortalityRisk(STARTING_AGE_MONTHS);
   const game: GameState = {
-    difficulty,random:createGameRandom(seed),policyScheduleEnabled:true,date: { year: 2030, month: 1 }, turn: 1, gameOverReason: null, world: createInitialWorldState(), logs: [], events: createEventState(),
+    difficulty,random:createGameRandom(seed),policyScheduleEnabled:true,date: { year: 2030, month: 1 }, turn: 1, gameOverReason: null, world: {...createInitialWorldState(),federalPolitics:{}}, logs: [], events: createEventState(),
     player: {
       leaderRisk:{situationalRisk:0,disasterExposure:0,diseaseExposure:0,conflictExposure:0,politicalRisk:0,mortalityModifierLastMonth:0,factors:[]},temporaryLeaderRiskModifiers:[],
       career: createPoliticalCareer(regionId ? 'governor' : 'president'),
@@ -127,6 +129,7 @@ function advanceMonthCore(game: GameState, options: AdvanceMonthOptions = {}): G
   next={...next,world:applyCrisisSpeciesPressure(next.world,previousWorld)};
   // 종족정치는 이전 통합도를 읽었습니다. 새 거버넌스는 다음 달에 피드백합니다.
   next = { ...next, world: updateWorldGovernance(next.world) };
+  next = updateStateRelations(next);
   next = updateWorldSecession(next);
   next = updateWorldConflicts(next,options.conflictRandom);
   next = updateCasusBelli(next);
@@ -150,6 +153,8 @@ function advanceMonthCore(game: GameState, options: AdvanceMonthOptions = {}): G
   if(next.gameOverReason)return next;
   next=generateWorldEvents(next,options);
   if(options.domesticAI!==false)next=updateDomesticAI(next,{autonomousWorld:options.autonomousWorld});
+  if(options.strategicAI!==false)next=updateStatePoliticalAI(next,options.autonomousWorld);
+  if(options.strategicAI!==false)next=updateNPCFederalStrategy(next,options.autonomousWorld);
   return options.strategicAI===false?next:updateStrategicAI(next,{autonomousWorld:options.autonomousWorld});
 }
 import { updateStrategicAI } from './strategicAI';

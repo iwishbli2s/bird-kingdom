@@ -1,3 +1,4 @@
+import {assessConflictPressure} from './conflictPressure';
 import { speciesDefinitions } from './populationConfig';
 import { canOrganize, canRequestReferendum, canDeclareUnilaterally, centralResponse } from './secession';
 import { secessionConfig as config } from './secessionConfig';
@@ -49,17 +50,19 @@ const stageDescriptions={
 const stageNames={organize:'자치연맹 결성',charter:'둥지권 자치헌장 제출',negotiation:'비행권 자치 협상',request:'독립 주민투표 요구',approval:'주민투표 승인·응답',refusal:'자치·주민투표 거부 후 대표회의',ballot:'독립 주민투표',agreement:'독립 이행 협정',foundation:'공화국 수립',declaration:'일방 독립선언',celebration:'독립 기념 비행'};
 export const secessionEventDefinitions:readonly GameEventDefinition[]=speciesDefinitions.flatMap(species=>(Object.keys(stageNames) as (keyof typeof stageNames)[]).map(stage=>({
   id:`secession-${species.id}-${stage}`,title:`${species.name} ${stageNames[stage]}`,description:stageDescriptions[stage],category:'governance' as const,
-  tone:stage==='celebration'?'positive' as const:'mixed' as const,baseMonthlyChance:.025,cooldownMonths:stage==='negotiation'?12:36,
+  tone:stage==='celebration'?'positive' as const:'mixed' as const,baseMonthlyChance:.025,cooldownMonths:['negotiation','approval','refusal','request'].includes(stage)?12:36,
   priority:['ballot','foundation'].includes(stage),nonPlayerChoiceId:stage==='approval'?'invest':'balance',tags:['crow-petition','eagle-petition','eagle-assembly','duck-protest','nest-conflict'],
   eligible:c=>{
-    const m=movement(c,species.id);if(!m)return false;
+    const m=movement(c,species.id);if(!m)return false;const urgent=(c.conflictPressure??assessConflictPressure(c.game,c.jurisdiction)).separatistPressure>=75;
+    const actions=c.jurisdiction.kind==='region'?c.game.world.federalPolitics?.[c.jurisdiction.id]?.history:undefined;
+    if(['negotiation','request','approval'].includes(stage)&&actions?.some(a=>c.game.turn-a.turn<3&&['autonomy','referendum','renegotiate'].includes(a.action)))return false;
     // 주의 소수 종족은 자치 협상까지 지원하며 주 전체 독립은 주류 종족 운동만 수행합니다.
     const lead=c.jurisdiction.kind==='country'||Object.values(c.runtime.population.species).sort((a,b)=>b.population-a.population)[0]?.speciesId===species.id;
     if(stage==='organize')return canOrganize(c.runtime,species.id);
     if(stage==='charter')return m.phase==='organizing'&&m.monthsInPhase>=config.charterMonths;
-    if(stage==='negotiation')return m.phase==='autonomy_campaign'&&m.monthsInPhase>=6&&(m.lastNegotiationTurn===null||c.game.turn-m.lastNegotiationTurn>=12);
+    if(stage==='negotiation')return m.phase==='autonomy_campaign'&&m.monthsInPhase>=(urgent?3:6)&&(m.lastNegotiationTurn===null||c.game.turn-m.lastNegotiationTurn>=(urgent?6:12));
     if(stage==='request')return lead&&canRequestReferendum(c.runtime,species.id);
-    if(stage==='approval')return m.phase==='referendum_campaign'&&(m.lastRefusalTurn===null||c.game.turn-m.lastRefusalTurn>=12);
+    if(stage==='approval')return m.phase==='referendum_campaign'&&(m.lastRefusalTurn===null||c.game.turn-m.lastRefusalTurn>=(urgent?6:12));
     if(stage==='refusal')return m.lastRefusalTurn!==null&&c.game.turn-m.lastRefusalTurn<=2;
     if(stage==='ballot')return m.phase==='referendum_scheduled'&&m.referendumScheduledInMonths===0;
     if(stage==='agreement')return m.phase==='transition'&&m.monthsInPhase>=1&&m.monthsInPhase<config.transitionMonths;

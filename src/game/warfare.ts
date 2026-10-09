@@ -1,5 +1,8 @@
+import { aggressionConfig } from './aggressionConfig';
+import { applyAggressionConsequences, applyAggressionPoliticalCost, defenderRally } from './aggression';
+import { materializeDirectCore } from './territory';
 import { collectHistory } from './history';
-import { addCasusBelli, getAccessibleWarTargets, getWarDeclarationBlock } from './casusBelli';
+import { addCasusBelli, getAccessibleWarTargets, getWarDeclarationBlock, resolveWarDeclaration } from './casusBelli';
 import { activeWars, militaryCommitments, synchronizeMilitary } from './military';
 import { clampMilitary as clamp } from './militaryPower';
 import { countryName, getBilateralRelation, getDiplomaticPairKey } from './diplomacy';
@@ -41,17 +44,21 @@ function respondToAllyRequestCore(game:GameState,requestId:string,accept:boolean
 }
 function declareWarCore(game:GameState,actor:string,belliId:string,goal:WarGoal,fromEvent=false,deferAllies=false):GameState {
   const block=getWarDeclarationBlock(game,actor,belliId,goal,fromEvent);if(block)throw new Error(block);
-  const world=synchronizeMilitary(game.world),state=world.warfare!,b=state.casusBelli[belliId],target=b.targetCountryId;
+  const {target:resolvedTarget,belli:b}=resolveWarDeclaration(game,actor,belliId),target=resolvedTarget!;
+  if(!b&&goal==='border_claim')game=materializeDirectCore(game,target);
+  const world=synchronizeMilitary(game.world),state=world.warfare!;
+  const legitimacy=b?'justified' as const:'unjustified' as const;
   let n=1;while(state.wars[`war-${n}`])n++;const id=`war-${n}`;
-  const participants:Record<string,WarParticipantState>={};for(const [countryId,side] of [[actor,'attacker'],[target,'defender']] as const)participants[countryId]={countryId,side,warSupport:calculateWarSupport(game,countryId,side,0,50,goal),fatigue:0,contribution:0};
-  const war:InterstateWarState={capabilityAtStart:Object.fromEntries([actor,target].map(id=>[id,world.countries[id].military!.capability])),id,attackers:[actor],defenders:[target],primaryAttacker:actor,primaryDefender:target,countryNames:{[actor]:countryName(world,actor),[target]:countryName(world,target)},status:'active',warGoal:goal,startedDate:{...game.date},resolvedDate:null,
-    fronts:getAccessibleWarTargets(world,belliId).map(regionId=>({regionId,originalOwnerCountryId:target,controllerCountryId:target,control:0,decisiveMonths:0})),participants,monthsAtWar:0,monthsInStatus:0,strategicControl:0,resolution:null};
+  const participants:Record<string,WarParticipantState>={};for(const [countryId,side] of [[actor,'attacker'],[target,'defender']] as const)participants[countryId]={countryId,side,warSupport:clamp(calculateWarSupport(game,countryId,side,0,50,goal)+(side==='defender'&&legitimacy==='unjustified'?aggressionConfig.defenderRally:0)),fatigue:0,contribution:0};
+  const war:InterstateWarState={legitimacy,...(b?{casusBelliType:b.type}:{}),capabilityAtStart:Object.fromEntries([actor,target].map(id=>[id,world.countries[id].military!.capability])),id,attackers:[actor],defenders:[target],primaryAttacker:actor,primaryDefender:target,countryNames:{[actor]:countryName(world,actor),[target]:countryName(world,target)},status:'active',warGoal:goal,startedDate:{...game.date},resolvedDate:null,
+    fronts:(b?getAccessibleWarTargets(world,b.id):goal==='border_claim'?getAccessibleWarTargets(world,target):[]).map(regionId=>({regionId,originalOwnerCountryId:target,controllerCountryId:target,control:0,decisiveMonths:0})),participants,monthsAtWar:0,monthsInStatus:0,strategicControl:0,resolution:null};
   const pairKey=getDiplomaticPairKey(actor,target),relation=getBilateralRelation(world,actor,target)!;
-  let next:GameState={...game,world:{...world,diplomacy:{...world.diplomacy!,relations:{...world.diplomacy!.relations,[pairKey]:{...relation,relations:clamp(relation.relations-35,-100,100),trust:clamp(relation.trust-20),threatShockMonths:12}}},warfare:{...state,wars:{...state.wars,[id]:war},casusBelli:{...state.casusBelli,[belliId]:{...b,consumed:true}}}}};
+  let next:GameState={...game,world:{...world,diplomacy:{...world.diplomacy!,relations:{...world.diplomacy!.relations,[pairKey]:{...relation,relations:clamp(relation.relations-35,-100,100),trust:clamp(relation.trust-20),threatShockMonths:12}}},warfare:{...state,wars:{...state.wars,[id]:war},casusBelli:b?{...state.casusBelli,[b.id]:{...b,consumed:true}}:state.casusBelli}}};
   for(const countryId of [actor,target]){const c=next.world.countries[countryId];next={...next,world:{...next.world,countries:{...next.world.countries,[countryId]:{...c,military:{...c.military!,activeWars:[...c.military!.activeWars,id]}}}}};}
+  next=applyAggressionConsequences(next,war);
   const brokeThisMonth=game.world.diplomacy?.history.some(h=>h.actorId===actor&&h.targetId===target&&h.action==='break_non_aggression'&&h.turn===game.turn);
   if(brokeThisMonth){const members=ownedRegions(next.world,actor);if(members.length)next={...next,world:{...next.world,regions:{...next.world.regions,...Object.fromEntries(members.map(r=>[r.id,{...r,governance:{...r.governance,approval:clamp(r.governance.approval-2)}}]))}}};else {const c=next.world.countries[actor];next={...next,world:{...next.world,countries:{...next.world.countries,[actor]:{...c,governance:{...c.governance!,approval:clamp(c.governance!.approval-2)}}}}};}}
-  next=recordWarHistory(next,id,`${war.countryNames[actor]} → ${war.countryNames[target]} 선전포고 · 비행회랑·둥지권 전쟁 시작${brokeThisMonth?' · 조약 파기 직후 공격 비용':''}`);
+  next=recordWarHistory(next,id,`${war.countryNames[actor]} → ${war.countryNames[target]} 선전포고 · ${legitimacy==='unjustified'?'명분 없는 침략전쟁':'정당화된 전쟁'} · 비행회랑·둥지권 전쟁 시작${brokeThisMonth?' · 조약 파기 직후 공격 비용':''}`);
   // 최초 방어국의 동맹만 호출합니다. 참전국의 동맹을 재귀 호출하지 않습니다.
   for(const ally of getDefenseAllies(next,target,actor)){
     if(activeWars(next.world).some(w=>w.attackers.includes(actor)&&w.attackers.includes(ally)||w.defenders.includes(actor)&&w.defenders.includes(ally)))continue;
@@ -79,7 +86,7 @@ export function resolveMonthlyWar(game:GameState,war:InterstateWarState,random:(
   const control=clamp(war.strategicControl+delta),fronts=war.fronts.map(f=>{const n=clamp(f.control+delta);return {...f,control:n,controllerCountryId:n>=config.occupationThreshold?war.primaryAttacker:n<=25?f.originalOwnerCountryId:f.controllerCountryId,decisiveMonths:n>=config.decisiveThreshold?f.decisiveMonths+1:0};});
   const participants=Object.fromEntries(Object.entries(war.participants).map(([id,p])=>{
     const m=game.world.countries[id]?.military!,fatigue=clamp(p.fatigue+(war.status==='active'?config.fatigueGrowth+Math.max(0,m.mobilization-20)*.005+Math.max(0,militaryCommitments(game.world,id)-1)*.1+(100-m.logistics)*.003+(war.monthsAtWar>=24?.3:0)+((p.side==='attacker'?control:100-control)<30?.2:0):-config.recovery));
-    return [id,{...p,fatigue,warSupport:calculateWarSupport(game,id,p.side,fatigue,control,war.warGoal),contribution:clamp(m.capability/(Object.values(war.participants).filter(x=>x.side===p.side).reduce((sum,x)=>sum+(game.world.countries[x.countryId]?.military?.capability??0),0)||1)*100)}];
+    return [id,{...p,fatigue,warSupport:clamp(calculateWarSupport(game,id,p.side,fatigue,control,war.warGoal)+(id===war.primaryDefender?defenderRally(war,war.monthsAtWar+1):0)),contribution:clamp(m.capability/(Object.values(war.participants).filter(x=>x.side===p.side).reduce((sum,x)=>sum+(game.world.countries[x.countryId]?.military?.capability??0),0)||1)*100)}];
   }));
   return {...war,fronts,participants,strategicControl:control,monthsAtWar:war.monthsAtWar+1,monthsInStatus:war.monthsInStatus+1};
 }
@@ -92,6 +99,7 @@ export function updateWorldWars(game:GameState,random?:()=>number):GameState {
       next={...next,world:applyWarCosts(next.world,p.countryId,war.status==='active',war.monthsAtWar)};
       const c=next.world.countries[p.countryId];next={...next,world:{...next.world,countries:{...next.world.countries,[c.id]:{...c,military:{...c.military!,fatigue:Math.max(c.military!.fatigue,p.fatigue),warSupport:p.warSupport}}}}};
     }
+    next={...next,world:applyAggressionPoliticalCost(next.world,war)};
     for(const f of war.fronts){if(war.status==='active')next={...next,world:applyOccupationImpact(next.world,f,war.monthsAtWar)};
       const old=game.world.warfare!.wars[war.id].fronts.find(old=>old.regionId===f.regionId);if(old&&old.controllerCountryId!==f.controllerCountryId)next=recordWarHistory(next,war.id,`${countryName(next.world,f.controllerCountryId)} 편대가 ${next.world.regions[f.regionId]?.regionIdentity?.name??f.regionId}의 관제권을 확보했습니다. 법적 영유권은 유지됩니다.`);
     }

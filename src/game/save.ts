@@ -1,3 +1,6 @@
+import {initialStateRelations,statePairKey,federalStateIds,isActiveFederalState} from './stateRelationsModel';
+import {migrateConflictSave} from './conflictMigration';
+import {casusBelliLabels} from './warfareConfig';
 import {migrateAchievementState} from './achievements';
 import {validateAchievementFields} from './achievementValidation';
 import {validateDifficulty} from './difficulty';
@@ -7,9 +10,9 @@ import { getEventDefinition } from './events';
 import { governmentDescriptors } from './government';
 import { historicalCountryName } from './history';
 import { randomStreamNames } from './randomState';
-import type { GameState, GameDate } from './types';
+import type { GameState, GameDate, WorldState } from './types';
 import type { SaveGameData } from './saveTypes';
-export const saveConfig = { version: 2, manualSlots: 5, autosaveSlot: 'auto', quickSlot: 'quick', maxImportBytes: 64 * 1024 * 1024 } as const;
+export const saveConfig = { version: 6, manualSlots: 5, autosaveSlot: 'auto', quickSlot: 'quick', maxImportBytes: 64 * 1024 * 1024 } as const;
 function fail(message = '이 저장 파일을 불러올 수 없습니다.'): never { throw new Error(message); }
 function obj(v: unknown): asserts v is Record<string, any> { if (!v || typeof v !== 'object' || Array.isArray(v))
     fail(); }
@@ -50,6 +53,28 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
     obj(raw.world);
     obj(raw.world.countries);
     obj(raw.world.regions);
+    if(raw.world.federalPolitics!==undefined){
+      obj(raw.world.federalPolitics);
+      for(const [id,p] of Object.entries(raw.world.federalPolitics) as [string,any][]){
+        if(!raw.world.regions[id])fail();obj(p);integer(p.nextActionTurn,0,raw.turn+6);arr(p.history);if(p.history.length>80)fail();
+        const seen=new Set<string>();let lastTurn=0;
+        for(const h of p.history){obj(h);str(h.id);str(h.parentCountryId);if(h.stateId!==id||h.parentCountryId!=='pigeon'||seen.has(h.id))fail();seen.add(h.id);date(h.date);integer(h.turn,1,raw.turn);if(h.turn<=lastTurn)fail();lastTurn=h.turn;
+          if(!['criticize','autonomy','defy','renegotiate','referendum','confront','declare'].includes(h.action)||!['limited','substantial','maximum'].includes(h.level)||!['ignore','negotiate','partial_concession','accept','political_pressure','economic_pressure','hardline_rejection'].includes(h.response))fail();
+        }
+      }
+    }
+    if(raw.world.statePolitics===undefined)fail();
+    if(raw.world.statePolitics!==undefined){
+      const p=raw.world.statePolitics;obj(p);obj(p.relations);arr(p.blocs);obj(p.actionCooldowns);
+      if(Object.keys(p.relations).length!==6)fail();
+      for(const [key,r] of Object.entries(p.relations) as [string,any][]){obj(r);if(key!==statePairKey(r.stateAId,r.stateBId)||r.stateAId>=r.stateBId||typeof r.active!=='boolean'||r.active!==(isActiveFederalState(raw.world as WorldState,r.stateAId)&&isActiveFederalState(raw.world as WorldState,r.stateBId)))fail();
+        for(const field of ['relations','rivalry','cooperation'])num(r[field],0,100);integer(r.actionCooldownUntilTurn,0,raw.turn+3);arr(r.history);arr(r.mediations);if(r.history.length>48||r.mediations.length>48)fail();
+        const ids=new Set<string>();for(const h of r.history){obj(h);str(h.id);if(ids.has(h.id)||!([r.stateAId,r.stateBId].includes(h.actorId)&&[r.stateAId,r.stateBId].includes(h.targetId))||h.actorId===h.targetId)fail();ids.add(h.id);date(h.date);integer(h.turn,1,raw.turn);if(!['criticize','counter_policy','mediate','statement','joint_autonomy','cooperate','negotiate'].includes(h.action)||!['ignore','rebut','counterattack','mediation','cooperation','de_escalation'].includes(h.response)||typeof h.accepted!=='boolean')fail();arr(h.reasonCodes);for(const code of h.reasonCodes)str(code);}
+        const mediationIds=new Set<string>();for(const m of r.mediations){obj(m);str(m.id);if(mediationIds.has(m.id))fail();mediationIds.add(m.id);date(m.date);integer(m.turn,1,raw.turn);if(!['neutral_mediation','favor_state_a','favor_state_b','ignore','compromise'].includes(m.outcome)||m.favoredStateId!==(m.outcome==='favor_state_a'?r.stateAId:m.outcome==='favor_state_b'?r.stateBId:null))fail();}
+      }
+      const blocIds=new Set<string>();for(const b of p.blocs){obj(b);str(b.id);if(blocIds.has(b.id))fail();blocIds.add(b.id);if(!['autonomy','fiscal','security','economic','anti_rival'].includes(b.purpose)||typeof b.active!=='boolean')fail();arr(b.memberStateIds);arr(b.originalMemberStateIds);for(const list of [b.memberStateIds,b.originalMemberStateIds])if(new Set(list).size!==list.length||list.some((id:any)=>!federalStateIds.includes(id)))fail();if(b.originalMemberStateIds.length<2||b.memberStateIds.some((id:any)=>!b.originalMemberStateIds.includes(id)))fail();integer(b.createdTurn,1,raw.turn);integer(b.expiresTurn,b.createdTurn+1,b.createdTurn+36);num(b.cohesion,0,100);if(b.endReason!==null)str(b.endReason);if(b.rivalStateId!==null&&(!federalStateIds.includes(b.rivalStateId)||b.memberStateIds.includes(b.rivalStateId)))fail();if(b.active&&(b.memberStateIds.length<2||b.memberStateIds.some((id:any)=>!isActiveFederalState(raw.world as WorldState,id))||b.purpose==='anti_rival'&&(!b.rivalStateId||!isActiveFederalState(raw.world as WorldState,b.rivalStateId))))fail();}
+      for(const [id,turn] of Object.entries(p.actionCooldowns)){if(!isActiveFederalState(raw.world as WorldState,id))fail();integer(turn,0,raw.turn+3);}
+    }
     obj(raw.events);
     arr(raw.logs);
     arr(raw.events.history);
@@ -189,7 +214,12 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
             fail();
         numeric(r, ['relations', 'trust', 'threat', 'tradeLevel', 'monthsSinceMajorDiplomaticAction']);
     }
+    arr(raw.world.warfare.aggressionHistory);
+    const aggressionIds=new Set<string>();
+    for(const r of raw.world.warfare.aggressionHistory){obj(r);str(r.warId);str(r.attackerCountryId);str(r.defenderCountryId);date(r.startedDate);integer(r.elapsedMonths,0);if(r.attackerCountryId===r.defenderCountryId||aggressionIds.has(r.warId)||!['justified','unjustified'].includes(r.legitimacy))fail();aggressionIds.add(r.warId);}
     for (const w of Object.values(raw.world.warfare.wars) as any[]) {
+        if(!['justified','unjustified'].includes(w.legitimacy))fail();
+        if(w.casusBelliType!==undefined&&!Object.hasOwn(casusBelliLabels,w.casusBelliType))fail();
         date(w.startedDate);
         arr(w.fronts);
         obj(w.participants);
@@ -227,6 +257,8 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
         const j = raw.events.pendingEvent.jurisdiction;
         if (!['country', 'region'].includes(j.kind) || !(j.kind === 'country' ? raw.world.countries[j.id] : raw.world.regions[j.id]))
             fail();
+        const pair=raw.events.pendingEvent.statePairTarget;
+        if(pair!==undefined){obj(pair);if(j.kind!=='region'||pair.actorStateId!==j.id||pair.actorStateId===pair.targetStateId||![pair.actorStateId,pair.targetStateId].every(id=>isActiveFederalState(raw.world as WorldState,id)))fail();}
         date(raw.events.pendingEvent.date);
         integer(raw.events.pendingEvent.turn, 1);
         for (const [field, map] of [['warId', raw.world.warfare.wars], ['conflictId', raw.world.internalConflicts], ['crisisId', raw.world.crises.activeCrises], ['diplomaticTargetId', raw.world.countries]] as const)
@@ -240,6 +272,7 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
     arr(raw.history.yearlySnapshots);
     obj(raw.history.countries);
     obj(raw.history.wars);
+    for(const w of Object.values(raw.history.wars) as any[]){if(!['justified','unjustified'].includes(w.legitimacy))fail();if(w.casusBelliType!==undefined&&!Object.hasOwn(casusBelliLabels,w.casusBelliType))fail();}
     obj(raw.history.crises);
     obj(raw.history.worldFirstTechnology);
     obj(raw.history.seenSources);
@@ -272,7 +305,7 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
         fail();
     assertJsonSafe(raw);
 }
-export const saveMigrations: Record<number, (raw: unknown) => unknown> = {1(raw){obj(raw);obj(raw.game);return {...raw,saveVersion:2,game:{...raw.game,difficulty:raw.game.difficulty??'normal'}};}};
+export const saveMigrations: Record<number, (raw: unknown) => unknown> = {5(raw){obj(raw);obj(raw.game);obj(raw.game.world);if(raw.game.world.statePolitics===undefined)fail();return {...raw,saveVersion:6};},1(raw){obj(raw);obj(raw.game);return {...raw,saveVersion:2,game:{...raw.game,difficulty:raw.game.difficulty??'normal'}};},2(raw){obj(raw);return migrateConflictSave(raw);},3(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:4,game:{...raw.game,world:{...raw.game.world,federalPolitics:raw.game.world.federalPolitics===undefined?{}:raw.game.world.federalPolitics}}};},4(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:5,game:{...raw.game,world:{...raw.game.world,statePolitics:raw.game.world.statePolitics===undefined?initialStateRelations(raw.game.world as WorldState):raw.game.world.statePolitics}}};}};
 export function migrateSaveData(raw: unknown): SaveGameData { obj(raw); integer(raw.saveVersion, 0); if (raw.saveVersion > saveConfig.version)
     fail('더 새로운 버전에서 만든 저장 파일입니다.'); let current: unknown = raw; while ((current as any).saveVersion < saveConfig.version) {
     const version = (current as any).saveVersion, migration = saveMigrations[version];

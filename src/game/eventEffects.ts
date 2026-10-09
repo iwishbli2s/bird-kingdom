@@ -1,3 +1,4 @@
+import {applyStatePoliticalActionEffects} from './stateRelations';
 import { startCrisis, recoverCrisis } from './crisis';
 import { addCasusBelli } from './casusBelli';
 import { applyWarAction } from './warfare';
@@ -45,6 +46,7 @@ export function applyEventEffects(game:GameState,j:Jurisdiction,effects:readonly
   world=refreshCountryAggregates(world);
   let next={...game,world};
   const random=secessionRandom??createSeededRandom(createRandomSeed());
+  for(const effect of effects)if(effect.kind==='state_politics')next=applyStatePoliticalActionEffects(next,effect.actorStateId,effect.targetStateId,effect.action,effect.purpose??'economic');
   for(const effect of effects)if(effect.kind==='movement'){
     next=applySecessionAction(next,j,effect.speciesId,effect.action,random);
     if(effect.dispute){const m=(j.kind==='region'?next.world.regions[j.id]:next.world.countries[j.id]).secession?.[effect.speciesId];const id=m?.createdCountryId;if(id){const c=next.world.countries[id];next={...next,world:{...next.world,countries:{...next.world.countries,[id]:{...c,identity:{...c.identity!,territorialDispute:effect.dispute}}}}};}}

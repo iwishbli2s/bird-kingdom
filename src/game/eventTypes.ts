@@ -7,8 +7,10 @@ export type EventCategory = 'ecology'|'population'|'economy'|'social'|'species'|
 export type EventSeverity = 1|2|3;
 export interface Jurisdiction { kind:'country'|'region'; id:string }
 export type EventRuntime = CountryRuntimeState & {social:SocialState;governance:GovernanceState;speciesPolitics:SpeciesPoliticsState};
-export interface EventContext { strategicAIEnabled?:boolean; crisisId?:string; game:GameState; jurisdiction:Jurisdiction; runtime:EventRuntime; conflictId?:string; diplomaticTargetId?:string; warId?:string }
+export interface StatePairEventTarget {actorStateId:string;targetStateId:string}
+export interface EventContext { conflictPressure?:import("./conflictPressure").ConflictPressureAssessment; statePairTarget?:StatePairEventTarget; strategicAIEnabled?:boolean; crisisId?:string; game:GameState; jurisdiction:Jurisdiction; runtime:EventRuntime; conflictId?:string; diplomaticTargetId?:string; warId?:string }
 export type EventEffect =
+  | ({kind:"state_politics";action:import("./stateRelationsTypes").StateAction;purpose?:import("./stateRelationsTypes").BlocPurpose} & StatePairEventTarget)
   | {kind:"start_crisis";crisisType:import("./crisisTypes").CrisisType;severity:number;sourceEventId:string;protection?:number;activityReduction?:number}
   | {kind:"crisis_recovery";crisisId:string;value:number;aid?:boolean}
   | {kind:"leader_risk";value:number;months:number}
@@ -33,11 +35,12 @@ export interface EventChoiceDefinition {
 }
 export interface GameEventDefinition {
   id:string;title:string;description:string;category:EventCategory;tone:'positive'|'mixed'|'negative';
+  conflictFamily?:import("./conflictPressure").ConflictEventFamily;statePairEvent?:boolean;
   baseMonthlyChance:number;cooldownMonths:number; priority?: boolean; crisisEvent?:boolean; conflictEvent?: boolean; diplomacyEvent?:boolean; warEvent?:boolean;
   eligible:(context:EventContext)=>boolean;calculateChance:(context:EventContext)=>number;severity:(context:EventContext)=>EventSeverity;
   choices:EventChoiceDefinition[];nonPlayerChoiceId:string;tags:readonly string[];
 }
-export interface PendingEvent {crisisId?:string;warId?:string;id:string;eventId:string;date:GameDate;turn:number;jurisdiction:Jurisdiction;severity:EventSeverity;conflictId?:string;jurisdictionName?:string;diplomaticTargetId?:string}
+export interface PendingEvent {statePairTarget?:StatePairEventTarget;crisisId?:string;warId?:string;id:string;eventId:string;date:GameDate;turn:number;jurisdiction:Jurisdiction;severity:EventSeverity;conflictId?:string;jurisdictionName?:string;diplomaticTargetId?:string}
 export interface ActiveEventEffect {id:string;sourceEventId:string;jurisdiction:Jurisdiction;remainingMonths:number;effects:EventEffect[]}
 export interface EventHistoryEntry extends PendingEvent {choiceId:string;choiceLabel:string;title:string;category:EventCategory;playerChoice:boolean}
 export interface EventState {pendingEvent:PendingEvent|null;cooldowns:Record<string,number>;activeEffects:ActiveEventEffect[];history:EventHistoryEntry[]}

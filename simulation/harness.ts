@@ -16,7 +16,7 @@ export async function scenario(g:GameState,name:string,m:Awaited<ReturnType<type
  if(name==='prosperity'){for(const x of [c,...Object.values(g.world.regions)]){x.fiscal.treasury=x.economy.gdp*.5;for(const d of Object.values(x.technology!.domains))d.level=9;}}
  return g;
 }
-export async function runSimulation(seed:number,months:number,source='src',scenarioName='normal',difficulty='normal',strategy='ai'){
+export async function runSimulation(seed:number,months:number,source='src',scenarioName='normal',difficulty='normal',strategy='ai',observer?:(game:GameState)=>void){
  const m=await modules(source);let g:GameState=m.engine.createGame('sparrow',undefined,seed,difficulty);g=await scenario(g,scenarioName,m);const initialGDP=Object.values(g.world.countries).reduce((s,c)=>s+c.economy.gdp,0),initialPop=Object.values(g.world.countries).reduce((s,c)=>s+c.population.total,0);
  let activeCountrySum=0,singleCountryMonths=0;let peakDebt=0,maxInflation=-Infinity,minInflation=Infinity,approval=0,risk=0,chance=0,activeCrisisMonths=0,emergencyChanges=0;const checkpoints:any[]=[],warActiveMonths:Record<string,number>={},firstWarPause:Record<string,number>={};
  for(let i=0;i<months;i++){
@@ -27,6 +27,7 @@ export async function runSimulation(seed:number,months:number,source='src',scena
   if(strategy!=='ai'){for(const def of m.defs.technologyDefinitions){const t=g.world.countries.sparrow.technology!;if(!t.domains[def.domain as keyof typeof t.domains].currentResearchId&&!m.tech.researchBlock(t,def.id))g=m.tech.setResearch(g,def.domain,def.id);}}
   for(const w of Object.values(g.world.warfare!.wars))if(w.status==='active')warActiveMonths[w.id]=(warActiveMonths[w.id]??0)+1;
   const before=g;g=m.engine.advanceMonth(g,{autonomousWorld:true,domesticAI:strategy==='ai',mortalityRiskOverride:0,electionRandom:()=>0});if(strategy!=='ai')g=m.ai.updateDomesticAI(g);for(const w of Object.values(g.world.warfare!.wars))if(w.status!=='active'&&firstWarPause[w.id]===undefined)firstWarPause[w.id]=w.monthsAtWar; if(g.turn===before.turn)throw new Error('Observer turn blocked '+g.gameOverReason);
+  observer?.(g);
   activeCountrySum+=Object.keys(g.world.countries).length;singleCountryMonths+=Number(Object.keys(g.world.countries).length===1);
   for(const [id,c] of Object.entries(g.world.countries)){peakDebt=Math.max(peakDebt,c.fiscal.debt/Math.max(1,c.economy.gdp));maxInflation=Math.max(maxInflation,c.economy.inflation);minInflation=Math.min(minInflation,c.economy.inflation);}
   for(const [id,b] of Object.entries(g.policySchedules??{})){const a=before.policySchedules?.[id];if(a&&b.emergencyNextChangeTurn>a.emergencyNextChangeTurn)emergencyChanges++;}

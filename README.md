@@ -228,3 +228,16 @@ window.birdKingdomDebug.setMortalityRisk(null) // 재정의 해제, 자연 위�
 
 
 
+
+
+v1.1 Conflict Update 1/5의 정당성·침략 비용·저장 migration 및 검증 결과는 [CONFLICT_UPDATE.md](CONFLICT_UPDATE.md)를 참고하세요.
+
+v1.1 Conflict Update 2/5의 주지사 연방정치 행동·주민 반응·협상·직접 독립·저장 v4 및 49개 검증 보고는 [FEDERAL_CONFLICT_UPDATE.md](FEDERAL_CONFLICT_UPDATE.md)를 참고하세요.
+
+v1.1 Conflict Update 3/5의 연방 내부 6쌍 관계·주간 정치행동·임시 정치블록·연방 중재·독립 후 외교 승계·저장 v5 및 55개 검증 보고는 [STATE_RELATIONS_UPDATE.md](STATE_RELATIONS_UPDATE.md)를 참고하세요. 장기 재검증은 `pnpm state:regression`으로 실행합니다.
+
+v1.1 Conflict Update 4/5의 상태 기반 사건 압력·분리주의 연쇄·자연 블록/중재·저장 v6 및 70개 검증 보고는 [CONFLICT_EVENTS_UPDATE.md](CONFLICT_EVENTS_UPDATE.md)를 참고하세요. 재검증은 `pnpm pressure:regression`과 `pnpm pressure:conditional`입니다.
+
+## v1.1 Conflict Update 5/5
+
+AI 성향·기회 침략·연방 전략·후퇴 판단과 최종 검증은 [STRATEGIC_CONFLICT_UPDATE.md](STRATEGIC_CONFLICT_UPDATE.md)에 정리했습니다. 저장 버전은 6을 유지합니다.

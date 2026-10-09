@@ -1,3 +1,5 @@
+import { aggressionThreat, defenderRally } from './aggression';
+import {strategicConflictProfile} from './strategicConflictProfile';
 import { calculateDiplomaticThreat, getBilateralRelation, isRecognized, hasSanctions, getDiplomaticActionBlock } from './diplomacy';
 import { activeWars, militaryCommitments } from './military';
 import { getWarDeclarationBlock } from './casusBelli';
@@ -20,10 +22,14 @@ export function assessCountry(game:GameState,actor:string,target:string):Strateg
  const affinity=clampAI(40+r.relations*.35+r.trust*.3+(r.nonAggressionPact?8:0)+(r.defensePact?8:0)-(hasSanctions(r)?20:0)-(war?40:0)-history.filter(h=>h.action.startsWith('break_')).length*5);
  const threat=clampAI(Math.max(calculateDiplomaticThreat(world,actor,target,r),actor===r.countryA?r.threatAtoB:r.threatBtoA)+Math.max(0,n.capability-m.capability)*.3+Math.max(0,n.mobilization-25)*.2+allies.length*4+(war?40:0));
  const economicValue=clampAI(r.tradeLevel*.6+Math.min(30,Math.sqrt(b.economy.gdp/Math.max(1,a.economy.gdp))*20)+(r.migratoryPassageAgreement?8:0)-(hasSanctions(r)?20:0));
- const commonThreat=Object.keys(world.countries).some(id=>id!==actor&&id!==target&&(getBilateralRelation(world,actor,id)?.relations??0)<-30&&(getBilateralRelation(world,target,id)?.relations??0)<-30);
+ const commonThreat=Object.keys(world.countries).some(id=>id!==actor&&id!==target&&((getBilateralRelation(world,actor,id)?.relations??0)<-30&&(getBilateralRelation(world,target,id)?.relations??0)<-30||aggressionThreat(world,actor,id)>=12&&aggressionThreat(world,target,id)>=12));
  const allianceValue=clampAI(r.relations*.2+r.trust*.3+n.capability*.25+(commonThreat?30:0)+(r.defensePact?5:0)-militaryCommitments(world,target)*12);
  const territorialInterest=clampAI((dispute?45:0)+(claim?40:0)+(belli?35:0));
- let recognitionInterest=0;if(child.isDynamic&&!isRecognized(r,actor)){const legal=child.status==='established',pr=parent&&parent!==actor&&world.countries[parent]?getBilateralRelation(world,actor,parent):undefined;recognitionInterest=clampAI((legal?60:15)+r.relations*.3+economicValue*.2+(pr&&pr.relations<-30?20:0)-(legal?0:pr?(pr.defensePact?45:Math.max(0,pr.relations)*.5):0)-(parent===actor&&!legal?35:0));}
+ const foundingConflict=Object.values(world.internalConflicts??{}).find(c=>c.breakawayCountryId===target);
+ const playerInitiative=Object.entries(world.federalPolitics??{}).some(([id,p])=>world.regions[id]?.ownerCountryId===target&&p.history.some(h=>h.action==='declare'));
+ const governing=playerInitiative?derivedCountryRuntime(world,target).governance:undefined;
+ const foundingLegitimacy=playerInitiative&&child.status==='disputed_breakaway'?((foundingConflict?.foundingIndependence??50)-50)*.15+((governing?.stability??50)-50)*.1:0;
+ let recognitionInterest=0;if(child.isDynamic&&!isRecognized(r,actor)){const legal=child.status==='established',pr=parent&&parent!==actor&&world.countries[parent]?getBilateralRelation(world,actor,parent):undefined;recognitionInterest=clampAI((legal?60:15)+foundingLegitimacy+r.relations*.3+economicValue*.2+(pr&&pr.relations<-30?20:0)-(legal?0:pr?(pr.defensePact?45:Math.max(0,pr.relations)*.5):0)-(parent===actor&&!legal?35:0));}
  const conflictRisk=clampAI(threat*.6+territorialInterest*.3+Math.max(0,-r.relations)*.3+(hasSanctions(r)?10:0)-(r.nonAggressionPact?25:0));
  return {targetCountryId:target,affinity,threat,economicValue,allianceValue,territorialInterest,recognitionInterest,conflictRisk,overallPriority:clampAI(Math.max(threat,economicValue,territorialInterest,recognitionInterest)+(war?30:0)+(r.defensePact?8:0))};
 }
@@ -36,6 +42,7 @@ export function chooseForeignPosture(game:GameState,id:string,state:StrategicAIS
  const profile=game.world.governmentAI?.['country:'+id]?.profile??'balanced';
  const scores:Record<ForeignPolicyPosture,number>={cautious:40,cooperative:assessments.some(a=>a.affinity>45)?45:30,commercial:assessments.some(a=>a.economicValue>40)?48:25,defensive:high,assertive:Math.max(0,...assessments.map(a=>a.territorialInterest))*.75,survival:0};
  if(profile==='security'){scores.defensive+=8;scores.assertive+=5;}if(['research','industrial','agricultural'].includes(profile))scores.commercial+=8;if(['social','research'].includes(profile))scores.cooperative+=8;
+ const conflict=strategicConflictProfile(game,id);scores.assertive+=Math.max(0,conflict.aggression-50)*.3;scores.cautious+=Math.max(0,conflict.caution-50)*.2;scores.cooperative+=Math.max(0,conflict.deescalationBias-50)*.15;
  if(game.turn-state.postureSinceTurn<strategicConfig.postureHoldMonths)return state.foreignPolicy;
  const winner=(Object.keys(scores) as ForeignPolicyPosture[]).sort((a,b)=>scores[b]-scores[a]||a.localeCompare(b))[0];return scores[winner]>scores[state.foreignPolicy]+strategicConfig.postureMargin?winner:state.foreignPolicy;
 }
@@ -45,11 +52,11 @@ export function scoreDiplomaticAction(game:GameState,actor:string,target:string,
  if(action==='improve'){economic=a.economicValue*.3;security=a.threat*.15;trust=Math.max(0,50-r.relations)*.5;domesticCost=8+u.fiscal*.15;const recovery=Object.values(game.world.warfare?.wars??{}).some(w=>w.status==='resolved'&&w.participants[actor]&&w.participants[target])&&a.territorialInterest===0;if(r.relations>=55||r.relations<-55&&!recovery)trust-=100;}
  if(action==='trade'){economic=a.economicValue*.65+8;trust=5;domesticCost=5;if(r.tradeLevel>=70||r.relations<10||r.trust<30)economic-=100;}
  if(action==='non_aggression'){security=a.threat*.65;trust=8;domesticCost=4;}
- if(action==='defense'){security=a.allianceValue*.7;trust=8;domesticCost=Object.values(game.world.diplomacy!.relations).filter(p=>[p.countryA,p.countryB].includes(actor)&&p.defensePact).length*25+militaryCommitments(game.world,actor)*15;const common=Object.keys(game.world.countries).some(id=>id!==actor&&id!==target&&(getBilateralRelation(game.world,actor,id)?.relations??0)<-30&&(getBilateralRelation(game.world,target,id)?.relations??0)<-30);if(!common||r.trust<75||r.relations<65)security-=100;}
+ if(action==='defense'){security=a.allianceValue*.7;trust=8;domesticCost=Object.values(game.world.diplomacy!.relations).filter(p=>[p.countryA,p.countryB].includes(actor)&&p.defensePact).length*25+militaryCommitments(game.world,actor)*15;const common=Object.keys(game.world.countries).some(id=>id!==actor&&id!==target&&((getBilateralRelation(game.world,actor,id)?.relations??0)<-30&&(getBilateralRelation(game.world,target,id)?.relations??0)<-30||aggressionThreat(game.world,actor,id)>=12&&aggressionThreat(game.world,target,id)>=12));if(!common||r.trust<75||r.relations<65)security-=100;}
  if(action==='passage'){economic=r.tradeLevel*.55;trust=5;domesticCost=3;if(r.tradeLevel<50||r.relations<25)economic-=100;}
  if(action==='recognize'){security=a.recognitionInterest;economic=a.economicValue*.1;escalationRisk=game.world.countries[target].identity?.status==='established'?5:25;}
  if(action==='withdraw_recognition'){security=r.relations<-85&&a.territorialInterest>40?55:-100;escalationRisk=25+a.economicValue*.3;}
- if(action==='sanction'){security=r.relations<-60&&a.territorialInterest>30?70: -100;domesticCost=a.economicValue*.55+u.fiscal*.15;escalationRisk=10+u.crisis*.2;}
+ if(action==='sanction'){const aggression=aggressionThreat(game.world,actor,target);security=Math.max(r.relations<-60&&a.territorialInterest>30?70:-100,aggression>0?Math.min(85,aggression*2.2)+Math.max(0,50-r.trust)*.15:-100);domesticCost=a.economicValue*.55+u.fiscal*.15;escalationRisk=10+u.crisis*.2;}
  if(action==='lift_sanctions'){economic=a.economicValue*.4+15;security=(r.relations>-25||a.territorialInterest===0)?20:-60;}
  if(action==='break_defense'||action==='break_non_aggression'){security=r.relations<-75&&a.threat>65?65:-100;domesticCost=20+a.economicValue*.3;escalationRisk=15+u.crisis*.25;}
  if(action==='support_parent'){security=a.allianceValue*.2;trust=5;}
@@ -90,5 +97,6 @@ export function scorePeace(game:GameState,id:string,w:InterstateWarState,resolut
  if(resolution==='defense_success'&&p.side==='defender'&&w.strategicControl<=25)value+=35;
  if(attained&&resolution==='status_quo'&&w.monthsAtWar<48)value-=70;
  if(control>75&&p.fatigue<35&&w.monthsAtWar<24&&resolution==='status_quo')value-=50;
+ if(id===w.primaryDefender&&strategy!=='survival'&&resolution==='status_quo')value-=defenderRally(w)*.4;
  return value;
 }

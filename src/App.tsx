@@ -1,3 +1,5 @@
+import {performStateAction} from './game/stateRelations';
+import {performFederalAction} from './game/federalPolitics';
 import {activateTutorial,observeTutorialAction,tutorialStep} from './game/tutorial';
 import {markTutorialOffered,shouldOfferTutorial} from './game/preferences';
 import TutorialOffer from './components/TutorialOffer';
@@ -62,6 +64,8 @@ export default function App() {
   useEffect(()=>{if(!fastForward)return;const blocked=!game||tutorialStep(game)?.kind!=='wait'||game.gameOverReason||game.events.pendingEvent||showSaves||game.world.foreignProposals?.some(p=>p.targetId===game.player.controlledCountryId)||game.world.warfare?.allyRequests.some(r=>r.status==='pending'&&r.allyCountryId===game.player.controlledCountryId);if(blocked){setFastForward(false);return;}const timer=setTimeout(advance,75);return()=>clearTimeout(timer);},[game,fastForward,showSaves]);
   function resolveEvent(choice:string){mutate(current=>current.events.pendingEvent?resolvePendingEvent(current,choice,undefined,import.meta.env.DEV&&getDebugSecessionRoll()!==undefined?()=>getDebugSecessionRoll()!:undefined,import.meta.env.DEV?getDebugStrategicAI()!==false:true):current);}  if (game && (!game.player.alive || game.gameOverReason)) return <><GameOver game={game} onExit={exitGame} onSave={()=>setShowSaves(true)}/>{savePanel}</>;
   if (game) return <>{saveLauncher}{savePanel}{saveNotice&&<p className="save-status" role="status">{saveNotice}</p>}<Dashboard key={loadRevision} game={game} onAdvance={advance} onExit={exitGame} onTutorialChange={g=>{setFastForward(false);setGame(g);}} onFastForward={()=>setFastForward(v=>!v)} fastForward={fastForward}
+    onStateAction={(target,action,purpose,rival)=>mutate(current=>performStateAction(current,current.player.controlledRegionId!,target,action,purpose,rival))}
+    onFederalAction={(action,level)=>mutate(current=>performFederalAction(current,current.player.controlledRegionId!,action,level))}
     onResearch={(domain,id)=>mutate(current=>setResearch(current,domain,id))}
     onMobilization={target=>setGame(current=>current?setMobilizationTarget(current,target):null)}
     onWarAction={(id,action)=>setGame(current=>current?applyWarAction(current,id,action):null)}

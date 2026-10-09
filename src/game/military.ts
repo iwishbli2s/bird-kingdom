@@ -24,7 +24,7 @@ export function createMilitaryState(r:CountryRuntimeState):MilitaryState {
 }
 export function synchronizeMilitary(world:WorldState):WorldState {
   const countries=Object.fromEntries(Object.entries(world.countries).map(([id,c])=>[id,{...c,military:c.military??createMilitaryState(derivedCountryRuntime(world,id))}]));
-  const state=world.warfare??{wars:{},casusBelli:{},truces:{},allyRequests:[],history:[]};
+  const state=world.warfare??{aggressionHistory:[],wars:{},casusBelli:{},truces:{},allyRequests:[],history:[]};
   const exists=(id:string)=>!!countries[id];
   const wars=Object.fromEntries(Object.entries(state.wars).map(([id,w])=>[id,w.status!=='resolved'&&Object.keys(w.participants).some(id=>!exists(id))?{...w,status:'resolved' as const,resolution:'status_quo' as const,fronts:w.fronts.map(f=>({...f,controllerCountryId:world.regions[f.regionId]?.ownerCountryId??f.controllerCountryId}))}:w]));
   for(const c of Object.values(countries))c.military={...c.military!,activeWars:Object.values(wars).filter(w=>w.status!=='resolved'&&w.participants[c.id]).map(w=>w.id)};

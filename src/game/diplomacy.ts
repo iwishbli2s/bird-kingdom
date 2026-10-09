@@ -1,3 +1,5 @@
+import {synchronizeStateRelationsWorld,inheritedStateDiplomaticBias} from './stateRelationsModel';
+import { aggressionThreat } from './aggression';
 import { collectHistory } from './history';
 import { countriesAtWar } from './military';
 import { diplomacyConfig as config, diplomaticActionLabels } from './diplomacyConfig';
@@ -20,14 +22,17 @@ export function createBilateralRelation(world:WorldState,a:string,b:string):Bila
   const child=A?.originCountryId===countryB?A:B?.originCountryId===countryA?B:undefined;
   const initial=!A?.isDynamic&&!B?.isDynamic,legal=child?.status==='established';
   const relations=initial?20:child?(legal?20:-45):0,trust=initial?45:child?(legal?40:12):30;
-  return {countryA,countryB,relations,trust,threat:initial?25:child&&!legal?65:20,threatAtoB:initial?25:child&&!legal?65:20,threatBtoA:initial?25:child&&!legal?65:20,
+  const base:BilateralRelationState={countryA,countryB,relations,trust,threat:initial?25:child&&!legal?65:20,threatAtoB:initial?25:child&&!legal?65:20,threatBtoA:initial?25:child&&!legal?65:20,
     baselineTradeLevel:initial?35:0,tradeLevel:initial?35:child?(legal?15:0):5,nonAggressionPact:false,defensePact:false,migratoryPassageAgreement:false,
     sanctionsAtoB:false,sanctionsBtoA:false,
     recognizedAbyB:!A?.isDynamic||(child===A&&legal),recognizedBbyA:!B?.isDynamic||(child===B&&legal),
     monthsSinceMajorDiplomaticAction:config.cooldownMonths,relationsDeltaLastMonth:0,lastActionTurnA:null,lastActionTurnB:null,
     disruptionMonths:0,disruptionExposure:0,threatShockMonths:0};
+  const inherited=inheritedStateDiplomaticBias(world,a,b);base.relations=clamp(base.relations+inherited.relations,-100,100);base.trust=clamp(base.trust+inherited.trust);
+  base.threatAtoB=clamp(base.threatAtoB+aggressionThreat(world,countryA,countryB));base.threatBtoA=clamp(base.threatBtoA+aggressionThreat(world,countryB,countryA));base.threat=(base.threatAtoB+base.threatBtoA)/2;return base;
 }
 export function synchronizeDiplomacy(world:WorldState):WorldState {
+  world=synchronizeStateRelationsWorld(world);
   const relations={...world.diplomacy?.relations};
   for(const [key,r] of Object.entries(relations))if(!world.countries[r.countryA]||!world.countries[r.countryB])delete relations[key];
   const ids=Object.keys(world.countries).sort();for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
@@ -46,6 +51,7 @@ export function calculateDiplomaticThreat(world:WorldState,observer:string,targe
   return clamp(15+Math.min(18,Math.log1p(b.economy.gdp/(a.economy.gdp+1))*12)
     +Math.min(12,Math.sqrt(b.economy.industries.defense.output)*.8)+b.fiscal.budgetPolicy.defense*.5
     -r.relations*.18+(dispute?35:0)+(hasSanctions(r)?8:0)+(r.threatShockMonths>0?12:0)
+    +aggressionThreat(world,observer,target)
     -(r.nonAggressionPact?7:0)-(r.defensePact?8:0));
 }
 export function getDiplomaticCooldown(r:BilateralRelationState,actor:string,turn:number):number {
