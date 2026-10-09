@@ -8,7 +8,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "tsx --test tests/game.test.ts tests/world.test.ts tests/mortality.test.ts tests/economy.test.ts tests/fiscal.test.ts tests/budget.test.ts tests/population.test.ts tests/speciesPolitics.test.ts tests/social.test.ts tests/governance.test.ts tests/election.test.ts tests/events.test.ts tests/secession.test.ts tests/conflict.test.ts tests/diplomacy.test.ts tests/warfare.test.ts tests/technology.test.ts tests/crises.test.ts tests/ai.test.ts tests/strategicAI.test.ts tests/history.test.ts tests/saveLoad.test.ts tests/difficulty.test.ts tests/convergence.test.ts tests/tutorial.test.ts tests/achievements.test.ts tests/sovereignty.test.ts tests/timeDisplay.test.ts tests/aggression.test.ts tests/federalPolitics.test.ts tests/stateRelations.test.ts tests/conflictPressure.test.ts tests/strategicConflict.test.ts tests/invasionBalance.test.ts",
+    "test": "tsx --test tests/game.test.ts tests/world.test.ts tests/mortality.test.ts tests/economy.test.ts tests/fiscal.test.ts tests/budget.test.ts tests/population.test.ts tests/speciesPolitics.test.ts tests/social.test.ts tests/governance.test.ts tests/election.test.ts tests/events.test.ts tests/secession.test.ts tests/conflict.test.ts tests/diplomacy.test.ts tests/warfare.test.ts tests/technology.test.ts tests/crises.test.ts tests/ai.test.ts tests/strategicAI.test.ts tests/history.test.ts tests/saveLoad.test.ts tests/difficulty.test.ts tests/convergence.test.ts tests/tutorial.test.ts tests/achievements.test.ts tests/sovereignty.test.ts tests/timeDisplay.test.ts tests/aggression.test.ts tests/federalPolitics.test.ts tests/stateRelations.test.ts tests/conflictPressure.test.ts tests/strategicConflict.test.ts tests/invasionBalance.test.ts tests/annualUx.test.ts",
     "balance:convergence": "tsx simulation/convergenceRun.ts",
     "tutorial:regression": "tsx simulation/tutorialRegression.ts",
     "conflict:regression": "tsx simulation/conflictRun.ts",
@@ -22,7 +22,8 @@
     "strategy:regression": "tsx simulation/strategyRun.ts",
     "strategy:conditional": "tsx simulation/strategyConditional.ts",
     "strategy:stress": "tsx simulation/strategyStress.ts",
-    "invasion:regression": "tsx simulation/invasionRegression.ts"
+    "invasion:regression": "tsx simulation/invasionRegression.ts",
+    "reports:regression": "tsx simulation/annualRegression.ts"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

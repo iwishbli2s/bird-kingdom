@@ -188,3 +188,17 @@
 .state-action-settings select { background: #18232b; color: #e7edef; border: 1px solid #35454c; border-radius: 6px; padding: 9px; max-width: 100%; }
 @media(max-width:900px) { .state-pair-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .state-relations { padding: 16px; } .state-pair-grid { grid-template-columns: 1fr; } .state-action-settings { display: grid; } }
+
+/* Report UI: immediate text updates, no transitions or animation. */
+.patch-card{display:flex;flex-direction:column;gap:9px;text-align:left;width:min(100%,460px);margin-top:24px;padding:18px;border:1px solid #466159;background:#142b28;color:#dce8e7;border-radius:8px;line-height:1.6;overflow-wrap:anywhere}
+.patch-card strong{font-size:17px}.patch-card small{color:#a6bcb4}.patch-new{margin-left:8px;background:#c9db91;color:#1c2922;padding:3px 7px;border-radius:3px;font-size:11px}
+.report-overlay{position:fixed;inset:0;z-index:1150;background:#081316d9;display:flex;align-items:center;justify-content:center;padding:20px}
+.report-dialog{background:#15252b;color:#dce8e7;border:1px solid #41565a;border-radius:10px;width:min(760px,100%);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;min-width:0;box-shadow:0 15px 60px #0006}
+.report-dialog>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;border-bottom:1px solid #34464d;flex-shrink:0}.report-dialog h2{font-size:23px;margin:4px 0}.report-dialog header button{min-height:44px;flex-shrink:0}
+.report-scroll{overflow-y:auto;overscroll-behavior:contain;padding:20px 24px;min-height:0;line-height:1.65;overflow-wrap:anywhere}.report-scroll h3{font-size:21px;margin:10px 0}.report-scroll h4{margin:18px 0 8px}.report-scroll ul{padding-left:22px}.report-scroll li{margin:8px 0}.report-scroll details{border-top:1px solid #34464d;padding-top:16px;margin-top:24px}.report-scroll summary{cursor:pointer;min-height:44px}
+.annual-period{color:#9cafb5;font-size:12px}.annual-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.annual-metrics>div{display:flex;flex-direction:column;gap:4px;padding:13px;background:#1c3036;border:1px solid #30464d;border-radius:5px;min-width:0}.annual-metrics span{font-size:12px;color:#acbec4}.annual-metrics strong{font-size:14px;overflow-wrap:anywhere}.annual-metrics b{font-size:15px;color:#c5d7d7}.annual-events span{display:block;font-size:12px;color:#a6b9bf}.annual-events p{font-size:13px;margin:3px 0}.annual-history-card{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;min-height:58px;text-align:left;flex-wrap:wrap}.annual-setting{display:flex;align-items:center;gap:7px;font-size:13px;color:#aebdc4;margin:10px 0 16px}.annual-setting input{width:18px;height:18px;accent-color:#94c4b0}
+@media(max-width:640px){.report-overlay{padding:10px}.report-dialog{max-height:calc(100dvh - 20px)}.report-dialog>header{padding:12px 14px}.report-dialog h2{font-size:20px}.report-scroll{padding:14px}.annual-metrics{grid-template-columns:1fr}.patch-card{width:100%}.setup-header .version{font-size:10px;white-space:normal;text-align:right;max-width:130px}}
+
+.report-overlay,.report-overlay *,.patch-card,.patch-card *{animation:none!important;transition:none!important}
+
+@media(max-width:640px){.menu-copy h1{font-size:clamp(48px,15.5vw,64px)}}

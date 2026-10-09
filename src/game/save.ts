@@ -1,3 +1,5 @@
+import {initializeAnnualReports} from './annual';
+import {validateAnnualReports} from './annualValidation';
 import {initialStateRelations,statePairKey,federalStateIds,isActiveFederalState} from './stateRelationsModel';
 import {migrateConflictSave} from './conflictMigration';
 import {casusBelliLabels} from './warfareConfig';
@@ -12,7 +14,7 @@ import { historicalCountryName } from './history';
 import { randomStreamNames } from './randomState';
 import type { GameState, GameDate, WorldState } from './types';
 import type { SaveGameData } from './saveTypes';
-export const saveConfig = { version: 6, manualSlots: 5, autosaveSlot: 'auto', quickSlot: 'quick', maxImportBytes: 64 * 1024 * 1024 } as const;
+export const saveConfig = { version: 7, manualSlots: 5, autosaveSlot: 'auto', quickSlot: 'quick', maxImportBytes: 64 * 1024 * 1024 } as const;
 function fail(message = '이 저장 파일을 불러올 수 없습니다.'): never { throw new Error(message); }
 function obj(v: unknown): asserts v is Record<string, any> { if (!v || typeof v !== 'object' || Array.isArray(v))
     fail(); }
@@ -303,9 +305,10 @@ export function validateGameState(raw: unknown): asserts raw is GameState {
         fail();
     if (new Set(raw.history.timeline.map((e: any) => e.id)).size !== raw.history.timeline.length)
         fail();
+    if(raw.annual!==undefined)validateAnnualReports(raw.annual,raw.turn);
     assertJsonSafe(raw);
 }
-export const saveMigrations: Record<number, (raw: unknown) => unknown> = {5(raw){obj(raw);obj(raw.game);obj(raw.game.world);if(raw.game.world.statePolitics===undefined)fail();return {...raw,saveVersion:6};},1(raw){obj(raw);obj(raw.game);return {...raw,saveVersion:2,game:{...raw.game,difficulty:raw.game.difficulty??'normal'}};},2(raw){obj(raw);return migrateConflictSave(raw);},3(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:4,game:{...raw.game,world:{...raw.game.world,federalPolitics:raw.game.world.federalPolitics===undefined?{}:raw.game.world.federalPolitics}}};},4(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:5,game:{...raw.game,world:{...raw.game.world,statePolitics:raw.game.world.statePolitics===undefined?initialStateRelations(raw.game.world as WorldState):raw.game.world.statePolitics}}};}};
+export const saveMigrations: Record<number, (raw: unknown) => unknown> = {6(raw){obj(raw);obj(raw.game);validateGameState(raw.game);return {...raw,saveVersion:7,game:{...raw.game,annual:initializeAnnualReports(raw.game)}};},5(raw){obj(raw);obj(raw.game);obj(raw.game.world);if(raw.game.world.statePolitics===undefined)fail();return {...raw,saveVersion:6};},1(raw){obj(raw);obj(raw.game);return {...raw,saveVersion:2,game:{...raw.game,difficulty:raw.game.difficulty??'normal'}};},2(raw){obj(raw);return migrateConflictSave(raw);},3(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:4,game:{...raw.game,world:{...raw.game.world,federalPolitics:raw.game.world.federalPolitics===undefined?{}:raw.game.world.federalPolitics}}};},4(raw){obj(raw);obj(raw.game);obj(raw.game.world);return {...raw,saveVersion:5,game:{...raw.game,world:{...raw.game.world,statePolitics:raw.game.world.statePolitics===undefined?initialStateRelations(raw.game.world as WorldState):raw.game.world.statePolitics}}};}};
 export function migrateSaveData(raw: unknown): SaveGameData { obj(raw); integer(raw.saveVersion, 0); if (raw.saveVersion > saveConfig.version)
     fail('더 새로운 버전에서 만든 저장 파일입니다.'); let current: unknown = raw; while ((current as any).saveVersion < saveConfig.version) {
     const version = (current as any).saveVersion, migration = saveMigrations[version];
@@ -315,7 +318,7 @@ export function migrateSaveData(raw: unknown): SaveGameData { obj(raw); integer(
     obj(current);
     if (current.saveVersion !== version + 1)
         fail();
-} obj(current); validateGameState(current.game); obj(current.metadata); date(current.metadata.gameDate); str(current.metadata.saveId); str(current.metadata.name); str(current.metadata.playerCountryName); if (current.metadata.playerRegionName !== undefined)
+} obj(current); validateGameState(current.game); if(current.game.annual===undefined)fail('연간 보고 기준이 없는 저장 파일입니다.'); obj(current.metadata); date(current.metadata.gameDate); str(current.metadata.saveId); str(current.metadata.name); str(current.metadata.playerCountryName); if (current.metadata.playerRegionName !== undefined)
     str(current.metadata.playerRegionName); str(current.metadata.playerOffice); integer(current.metadata.turn, 1); integer(current.metadata.countryCount, 1); if (!['active', 'game_over'].includes(current.metadata.playStatus))
     fail(); for (const key of ['createdAt', 'updatedAt']) {
     str(current[key]);
@@ -324,7 +327,7 @@ export function migrateSaveData(raw: unknown): SaveGameData { obj(raw); integer(
 } if (current.metadata.countryCount !== Object.keys(current.game.world.countries).length || current.metadata.playStatus !== (current.game.gameOverReason ? 'game_over' : 'active') || current.metadata.gameOverReason !== (current.game.gameOverReason ?? undefined))
     fail(); if (current.metadata.turn !== current.game.turn || current.metadata.gameDate.year !== current.game.date.year || current.metadata.gameDate.month !== current.game.date.month)
     fail(); assertJsonSafe(current); const normalized=JSON.parse(JSON.stringify(current)) as SaveGameData; normalized.game=migrateAchievementState(normalized.game); validateAchievementFields(normalized.game); return normalized; }
-export function createSaveData(game: GameState, saveId: string, name?: string, previous?: SaveGameData, now = new Date().toISOString()): SaveGameData { validateGameState(game); const country = historicalCountryName(game, game.player.defeatedCountryId ?? game.player.controlledCountryId), data: SaveGameData = { saveVersion: saveConfig.version, createdAt: previous?.createdAt ?? now, updatedAt: now, metadata: { saveId, name: name?.trim().slice(0, 140) || `${country} — ${game.date.year}년 ${game.date.month}월`, gameDate: { ...game.date }, playerCountryName: country, ...(game.player.controlledRegionId ? { playerRegionName: regionInfo(game, game.player.controlledRegionId)?.name ?? game.player.controlledRegionId } : {}), playerOffice: game.player.career.office, turn: game.turn, playStatus: game.gameOverReason ? 'game_over' : 'active', ...(game.gameOverReason ? { gameOverReason: game.gameOverReason } : {}), countryCount: Object.keys(game.world.countries).length }, game }; return migrateSaveData(data); }
+export function createSaveData(game: GameState, saveId: string, name?: string, previous?: SaveGameData, now = new Date().toISOString()): SaveGameData { if(game.annual===undefined)game={...game,annual:initializeAnnualReports(game)}; validateGameState(game); const country = historicalCountryName(game, game.player.defeatedCountryId ?? game.player.controlledCountryId), data: SaveGameData = { saveVersion: saveConfig.version, createdAt: previous?.createdAt ?? now, updatedAt: now, metadata: { saveId, name: name?.trim().slice(0, 140) || `${country} — ${game.date.year}년 ${game.date.month}월`, gameDate: { ...game.date }, playerCountryName: country, ...(game.player.controlledRegionId ? { playerRegionName: regionInfo(game, game.player.controlledRegionId)?.name ?? game.player.controlledRegionId } : {}), playerOffice: game.player.career.office, turn: game.turn, playStatus: game.gameOverReason ? 'game_over' : 'active', ...(game.gameOverReason ? { gameOverReason: game.gameOverReason } : {}), countryCount: Object.keys(game.world.countries).length }, game }; return migrateSaveData(data); }
 export function serializeSave(data: SaveGameData): string { return JSON.stringify(migrateSaveData(data)); }
 export function deserializeSave(text: string): SaveGameData { try {
     return migrateSaveData(JSON.parse(text));

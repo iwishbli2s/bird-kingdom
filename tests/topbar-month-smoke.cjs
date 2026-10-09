@@ -2,7 +2,7 @@ const {chromium}=require('C:/Users/user/.cache/codex-runtimes/codex-primary-runt
 const assert=require('node:assert/strict');
 (async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
  const mobile=!!process.env.BIRD_MOBILE,context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1440,height:1000}}),page=await context.newPage(),errors=[];
- page.on('pageerror',e=>errors.push(e.message));await page.goto(process.env.BIRD_TEST_URL||'http://127.0.0.1:5175');
+ page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>localStorage.setItem('bird-kingdom:annual-autopopup','false'));await page.goto(process.env.BIRD_TEST_URL||'http://127.0.0.1:5175');
  await page.getByRole('button',{name:'튜토리얼 건너뛰기',exact:true}).click();await page.getByRole('button',{name:'공화국 운영 시작',exact:true}).click();
  const state=()=>page.evaluate(()=>window.birdKingdomDebug.getGameState());
  const nav=async name=>{const menu=page.getByRole('button',{name:'메뉴 열기',exact:true});if(await menu.isVisible())await menu.click();await page.getByRole('navigation',{name:'정부 운영 메뉴'}).getByRole('button',{name,exact:true}).click();};

@@ -204,6 +204,7 @@ export interface WorldState {
   regions: Record<RegionId, RegionRuntimeState>;
 }
 export interface GameState {
+  annual?:import('./annualTypes').AnnualReportState;
   achievements?:import('./achievementTypes').AchievementState;
   endingResult?:import('./achievementTypes').EndingResult;
   tutorial?:import('./tutorialTypes').TutorialState;

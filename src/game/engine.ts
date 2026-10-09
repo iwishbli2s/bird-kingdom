@@ -1,3 +1,4 @@
+import {initializeAnnualReports,collectAnnualReport} from './annual';
 import {updateStateRelations,updateStatePoliticalAI} from './stateRelations';
 import {updateNPCFederalStrategy} from './federalStrategy';
 import {createPlayerOrigin,emptyAchievementState,withAchievementMonth} from './achievements';
@@ -159,10 +160,10 @@ function advanceMonthCore(game: GameState, options: AdvanceMonthOptions = {}): G
 }
 import { updateStrategicAI } from './strategicAI';
 
-export function createGame(...args:Parameters<typeof createGameCore>):GameState { const next=createGameCore(...args); const archived=synchronizePolicySchedules(next,collectHistory(next,next)); return {...archived,player:{...archived.player,origin:createPlayerOrigin(archived)},achievements:emptyAchievementState(archived)}; }
+export function createGame(...args:Parameters<typeof createGameCore>):GameState { const next=createGameCore(...args); const archived=synchronizePolicySchedules(next,collectHistory(next,next)); return {...archived,player:{...archived.player,origin:createPlayerOrigin(archived)},achievements:emptyAchievementState(archived),annual:initializeAnnualReports(archived)}; }
 
 export function advanceMonth(...args:Parameters<typeof advanceMonthCore>):GameState { if(tutorialAdvanceBlock(args[0])||!args[0].player.alive||args[0].gameOverReason||args[0].events.pendingEvent||!args[1]?.autonomousWorld&&(args[0].world.foreignProposals?.some(p=>p.targetId===args[0].player.controlledCountryId)||args[0].world.warfare?.allyRequests.some(r=>r.status==='pending'&&r.allyCountryId===args[0].player.controlledCountryId)))return args[0];
-return withGameRandom(args[0],(g,r)=>{const o=args[1]??{};const next=withAchievementMonth(()=>advanceMonthCore(g,{...o,economyRandom:o.economyRandom??r('economy'),mortalityRandom:o.mortalityRandom??o.random??r('mortality'),electionRandom:o.electionRandom??r('election'),eventOccurrenceRandom:o.eventOccurrenceRandom??r('eventOccurrence'),eventOutcomeRandom:o.eventOutcomeRandom??r('eventOutcome'),secessionRandom:o.secessionRandom??r('secession'),conflictRandom:o.conflictRandom??r('conflict'),warRandom:o.warRandom??r('war'),crisisRandom:o.crisisRandom??r('crisis')}));return synchronizePolicySchedules(g,collectHistory(g,scheduleTutorial(next),true));}); }
+return withGameRandom(args[0],(g,r)=>{const o=args[1]??{};const next=withAchievementMonth(()=>advanceMonthCore(g,{...o,economyRandom:o.economyRandom??r('economy'),mortalityRandom:o.mortalityRandom??o.random??r('mortality'),electionRandom:o.electionRandom??r('election'),eventOccurrenceRandom:o.eventOccurrenceRandom??r('eventOccurrence'),eventOutcomeRandom:o.eventOutcomeRandom??r('eventOutcome'),secessionRandom:o.secessionRandom??r('secession'),conflictRandom:o.conflictRandom??r('conflict'),warRandom:o.warRandom??r('war'),crisisRandom:o.crisisRandom??r('crisis')}));return collectAnnualReport(g,synchronizePolicySchedules(g,collectHistory(g,scheduleTutorial(next),true)));}); }
 
 
 
