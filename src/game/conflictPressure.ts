@@ -1,5 +1,6 @@
 import {getStateRelation,getStateConflictEventMultiplier,commonStateRival} from './stateRelations';
 import {isActiveFederalState,federalStateIds} from './stateRelationsModel';
+import {derivedCountryRuntime} from './runtime';
 import type {GameState,Jurisdiction,EventContext,GameEventDefinition} from './types';
 export type ConflictEventFamily='autonomy'|'separatism'|'federal'|'state_rivalry'|'species'|'domestic_unrest'|'diplomatic'|'casus_belli';
 export interface ConflictPressureAssessment {separatistPressure:number;federalPressure:number;interstatePressure:number;speciesPressure:number;domesticPressure:number;diplomaticPressure:number}
@@ -18,7 +19,7 @@ export function assessConflictPressure(g:GameState,j:Jurisdiction):ConflictPress
  return calculateConflictPressure(g,j);
 }
 function calculateConflictPressure(g:GameState,j:Jurisdiction):ConflictPressureAssessment {
- const r=j.kind==='region'?g.world.regions[j.id]:g.world.countries[j.id];
+ const r=j.kind==='region'?g.world.regions[j.id]:g.world.countries[j.id]?derivedCountryRuntime(g.world,j.id):undefined;
  if(!r?.speciesPolitics||!r.governance||!r.social)return {separatistPressure:0,federalPressure:0,interstatePressure:0,speciesPressure:0,domesticPressure:0,diplomaticPressure:0};
  const recent=g.events.history.filter(e=>e.jurisdiction.kind===j.kind&&e.jurisdiction.id===j.id&&g.turn-e.turn<=12);
  const rejection=(g.world.federalPolitics?.[j.id]?.history??[]).filter(h=>g.turn-h.turn<=12&&['hardline_rejection','political_pressure','economic_pressure'].includes(h.response)).length;

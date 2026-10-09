@@ -1,5 +1,6 @@
 import { aggressionThreat, defenderRally } from './aggression';
 import {strategicConflictProfile} from './strategicConflictProfile';
+import {assessConflictPressure} from './conflictPressure';
 import { calculateDiplomaticThreat, getBilateralRelation, isRecognized, hasSanctions, getDiplomaticActionBlock } from './diplomacy';
 import { activeWars, militaryCommitments } from './military';
 import { getWarDeclarationBlock } from './casusBelli';
@@ -59,6 +60,13 @@ export function scoreDiplomaticAction(game:GameState,actor:string,target:string,
  if(action==='sanction'){const aggression=aggressionThreat(game.world,actor,target);security=Math.max(r.relations<-60&&a.territorialInterest>30?70:-100,aggression>0?Math.min(85,aggression*2.2)+Math.max(0,50-r.trust)*.15:-100);domesticCost=a.economicValue*.55+u.fiscal*.15;escalationRisk=10+u.crisis*.2;}
  if(action==='lift_sanctions'){economic=a.economicValue*.4+15;security=(r.relations>-25||a.territorialInterest===0)?20:-60;}
  if(action==='break_defense'||action==='break_non_aggression'){security=r.relations<-75&&a.threat>65?65:-100;domesticCost=20+a.economicValue*.3;escalationRisk=15+u.crisis*.25;}
+ if(action==='break_non_aggression'&&!r.defensePact){
+  const p=strategicConflictProfile(game,actor),m=game.world.countries[actor].military!,n=game.world.countries[target].military!,own=derivedCountryRuntime(game.world,actor);
+  const incident=Object.values(game.world.warfare!.casusBelli).some(b=>b.holderCountryId===actor&&b.targetCountryId===target&&!b.consumed&&b.expiresInMonths!==0&&['border_incident','sanctions_escalation','territorial_dispute'].includes(b.type));
+  if(incident&&m.capability/Math.max(1,n.capability)>=1.15&&m.fatigue<25&&m.warSupport>=50&&own.governance!.approval>=55&&own.governance!.stability>=55&&own.fiscal.treasury>=own.economy.gdp*.02&&r.relations<=75&&r.trust<=75&&(p.aggression>=45||p.opportunism>=60)){
+   security=Math.max(security,65+Math.min(20,Math.max(0,m.capability/Math.max(1,n.capability)-1)*30)+assessConflictPressure(game,{kind:'country',id:actor}).diplomaticPressure*.2);
+  }
+ }
  if(action==='support_parent'){security=a.allianceValue*.2;trust=5;}
  const bias=posture==='commercial'?economic*.1:posture==='cooperative'?trust*.2:posture==='defensive'?security*.1:0;
  const blocked=getDiplomaticActionBlock(game,actor,target,action,true);

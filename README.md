@@ -241,3 +241,8 @@ v1.1 Conflict Update 4/5의 상태 기반 사건 압력·분리주의 연쇄·�
 ## v1.1 Conflict Update 5/5
 
 AI 성향·기회 침략·연방 전략·후퇴 판단과 최종 검증은 [STRATEGIC_CONFLICT_UPDATE.md](STRATEGIC_CONFLICT_UPDATE.md)에 정리했습니다. 저장 버전은 6을 유지합니다.
+
+
+## v1.1 Conflict Update 5.1
+
+기회 침략 진입 조건과 외교 명분 판단의 최종 밸런스 패치입니다. 공식·동일 seed 후보 비교·확대 검증·62개 보고 항목은 [CONFLICT_BALANCE_5_1.md](CONFLICT_BALANCE_5_1.md)에 정리했습니다. 저장 버전은 6이며 장기 재검증은 `pnpm invasion:regression`입니다.
